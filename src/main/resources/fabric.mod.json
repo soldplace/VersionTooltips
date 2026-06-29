@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "versiontooltips",
+	"version": "${version}",
+	"name": "VersionTooltips",
+	"description": "This mod adds a simple toggleable tooltip that shows in what version an item was added to the game.",
+	"authors": [
+		"soldplace"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/versiontooltips/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.soldplace.VersionTooltips"
+		],
+		"client": [
+			"net.soldplace.VersionTooltipsClient"
+		],
+		"modmenu": [
+			"net.soldplace.config.ModMenuIntegration"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.18.2",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
