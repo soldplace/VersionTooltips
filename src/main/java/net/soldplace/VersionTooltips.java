@@ -19,6 +19,6 @@ public class VersionTooltips implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
-		LOGGER.info("Hello Fabric world!");
+		LOGGER.info("VersionTooltips is present in this modpack!");
 	}
 }

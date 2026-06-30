@@ -63,17 +63,13 @@ public class VersionTooltipsClient implements ClientModInitializer {
 
 			var id = Registries.ITEM.getId(stack.getItem());
 
-			if (config.type == VersionTooltipsConfig.TooltipVersionType.SnapshotOnly) {
+
+
+			if (config.type == VersionTooltipsConfig.TooltipType.SnapshotOnly) {
 				String snapshot = ItemVersionLoader.BLOCK_VERSIONS_SNAPSHOT.get(id);
 
 				if (snapshot == null) {
 					snapshot = ItemVersionLoader.ITEM_VERSIONS_SNAPSHOT.get(id);
-				}
-				if (snapshot == null) {
-					if (MISSING_REPORTED.add(id)) {
-						System.out.println("[VersionTooltips] Missing snapshot entry for: " + id.toString());
-					}
-					return;
 				}
 
 				if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
@@ -86,17 +82,11 @@ public class VersionTooltipsClient implements ClientModInitializer {
 				}
 			}
 
-			if (config.type == VersionTooltipsConfig.TooltipVersionType.VersionOnly) {
+			if (config.type == VersionTooltipsConfig.TooltipType.VersionOnly) {
 				String version = ItemVersionLoader.BLOCK_VERSIONS_VERSION.get(id);
 
 				if (version == null) {
 					version = ItemVersionLoader.ITEM_VERSIONS_VERSION.get(id);
-				}
-				if (version == null) {
-					if (MISSING_REPORTED.add(id)) {
-						System.out.println("[VersionTooltips] Missing version entry for: " + id.toString());
-					}
-					return;
 				}
 
 				if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
@@ -109,7 +99,7 @@ public class VersionTooltipsClient implements ClientModInitializer {
 				}
 			}
 
-			if (config.type == VersionTooltipsConfig.TooltipVersionType.VersionSnapshot) {
+			if (config.type == VersionTooltipsConfig.TooltipType.VersionSnapshot) {
 				String version = ItemVersionLoader.BLOCK_VERSIONS_VERSION.get(id);
 				String snapshot = ItemVersionLoader.BLOCK_VERSIONS_SNAPSHOT.get(id);
 
@@ -119,18 +109,6 @@ public class VersionTooltipsClient implements ClientModInitializer {
 
 				if (snapshot == null) {
 					snapshot = ItemVersionLoader.ITEM_VERSIONS_SNAPSHOT.get(id);
-				}
-
-				if (version == null || snapshot == null) {
-					if (MISSING_REPORTED.add(id)) {
-						if (version == null) {
-							System.out.println("[VersionTooltips] Missing version entry for: " + id.toString());
-						}
-						if (snapshot == null) {
-							System.out.println("[VersionTooltips] Missing snapshot entry for: " + id.toString());
-						}
-					}
-					return;
 				}
 
 				if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
@@ -143,7 +121,7 @@ public class VersionTooltipsClient implements ClientModInitializer {
 				}
 			}
 
-			if (config.type == VersionTooltipsConfig.TooltipVersionType.SnapshotVersion) {
+			if (config.type == VersionTooltipsConfig.TooltipType.SnapshotVersion) {
 				String version = ItemVersionLoader.BLOCK_VERSIONS_VERSION.get(id);
 				String snapshot = ItemVersionLoader.BLOCK_VERSIONS_SNAPSHOT.get(id);
 
@@ -153,18 +131,6 @@ public class VersionTooltipsClient implements ClientModInitializer {
 
 				if (snapshot == null) {
 					snapshot = ItemVersionLoader.ITEM_VERSIONS_SNAPSHOT.get(id);
-				}
-
-				if (version == null || snapshot == null) {
-					if (MISSING_REPORTED.add(id)) {
-						if (version == null) {
-							System.out.println("[VersionTooltips] Missing version entry for: " + id.toString());
-						}
-						if (snapshot == null) {
-							System.out.println("[VersionTooltips] Missing snapshot entry for: " + id.toString());
-						}
-					}
-					return;
 				}
 
 				if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {

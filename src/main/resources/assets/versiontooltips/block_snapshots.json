@@ -770,7 +770,7 @@
   "minecraft:cobbled_deepslate": "21w08a",
   "minecraft:deepslate_iron_ore": "21w08a",
   "minecraft:deepslate_gold_ore": "21w08a",
-  "minecraft:deepslate_lapis_lazuli_ore": "21w08a",
+  "minecraft:deepslate_lapis_ore": "21w08a",
   "minecraft:deepslate_redstone_ore": "21w08a",
   "minecraft:deepslate_diamond_ore": "21w08a",
   "minecraft:smooth_basalt": "21w08a",
@@ -954,7 +954,7 @@
   "minecraft:closed_eyeblossom": "24w44a",
   "minecraft:open_eyeblossom": "24w44a",
   "minecraft:resin_block": "24w44a",
-  "minecraft:resin_brick": "24w44a",
+  "minecraft:resin_bricks": "24w44a",
   "minecraft:chiseled_resin_bricks": "24w44a",
   "minecraft:resin_brick_slab": "24w44a",
   "minecraft:resin_brick_stairs": "24w44a",
@@ -1030,4 +1030,5 @@
   "minecraft:waxed_weathered_copper_lantern": "25w32a",
   "minecraft:waxed_oxidized_copper_lantern": "25w32a",
   "minecraft:golden_dandelion": "26.1 Snapshot 5"
+
 }
