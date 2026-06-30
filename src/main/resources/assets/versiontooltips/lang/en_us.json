@@ -15,5 +15,6 @@
   "text.versiontooltips.type.snapshot_only": "Snapshot Only",
   "text.versiontooltips.type.version_only": "Version Only",
   "text.versiontooltips.type.snapshot_v": "Snapshot (Version)",
-  "text.versiontooltips.type.v_snapshot": "Version (Snapshot)"
+  "text.versiontooltips.type.v_snapshot": "Version (Snapshot)",
+  "key.category.versiontooltips.main": "Version Tooltips"
 }
