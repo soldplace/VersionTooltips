@@ -3,6 +3,7 @@ package net.soldplace.config;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import me.shedaniel.clothconfig2.gui.entries.SelectionListEntry;
 
 
 @Config(name = "versiontooltips")
@@ -18,21 +19,28 @@ public class VersionTooltipsConfig implements ConfigData {
         Vanilla,
         Modded
     }
-    public enum TooltipVersionType implements me.shedaniel.clothconfig2.gui.widget.SelectionListEntry.Translatable {
-        SnapshotOnly("text.versiontooltips.type.snapshot_only"),
-        VersionOnly("text.versiontooltips.type.version_only"),
-        SnapshotVersion("text.versiontooltips.type.snapshot_v"),
-        VersionSnapshot("text.versiontooltips.type.v_snapshot");
-
-        private final String key;
-
-        TooltipVersionType(String key) {
-            this.key = key;
-        }
-
-        @Override
-        public @org.jetbrains.annotations.NotNull String getKey() {
-            return this.key;
-        }
-    }
+    public TooltipVersionType type = TooltipVersionType.SnapshotVersion;
+    public enum TooltipVersionType {
+        SnapshotOnly,
+        VersionOnly,
+        SnapshotVersion,
+        VersionSnapshot
+      }
+//    public enum TooltipVersionType implements SelectionListEntry.Translatable {
+//        SnapshotOnly("text.versiontooltips.type.snapshot_only"),
+//        VersionOnly("text.versiontooltips.type.version_only"),
+//        SnapshotVersion("text.versiontooltips.type.snapshot_v"),
+//        VersionSnapshot("text.versiontooltips.type.v_snapshot");
+//
+//        private final String key;
+//
+//        TooltipVersionType(String key) {
+//            this.key = key;
+//        }
+//
+//        @Override
+//        public @org.jetbrains.annotations.NotNull String getKey() {
+//            return this.key;
+//        }
+//    }
 }
