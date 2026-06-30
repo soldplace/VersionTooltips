@@ -2,10 +2,11 @@
 	"schemaVersion": 1,
 	"id": "versiontooltips",
 	"version": "${version}",
-	"name": "VersionTooltips",
+	"name": "Version Tooltips",
 	"description": "This mod adds a simple toggleable tooltip that shows in what version an item was added to the game.",
 	"authors": [
-		"soldplace"
+		"soldplace",
+		"Nicole.srt"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
