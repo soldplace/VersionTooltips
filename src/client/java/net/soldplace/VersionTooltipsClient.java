@@ -59,7 +59,7 @@ public class VersionTooltipsClient implements ClientModInitializer {
 				}
 			}
 
-			var id = Registries.ITEM.getId(stack.getItem());
+			var id = ItemVersionLoader.getEffectiveId(stack);
 
 
 

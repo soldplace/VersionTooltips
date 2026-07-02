@@ -2,6 +2,8 @@ package net.soldplace.data;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.SynchronousResourceReloader;
@@ -27,6 +29,30 @@ public class ItemVersionLoader implements SynchronousResourceReloader {
     public Identifier getFabricId() {
         return Identifier.of("versiontooltips", "item_versions");
     }
+
+    public static Identifier getEffectiveId(ItemStack stack) {
+        var potionContents = stack.get(DataComponentTypes.POTION_CONTENTS);
+        if (potionContents != null && potionContents.potion().isPresent()) {
+            var key = potionContents.potion().get().getKey();
+            if (key.isPresent()) {
+                return key.get().getValue();
+            }
+        }
+
+        var storedEnchants = stack.get(DataComponentTypes.STORED_ENCHANTMENTS);
+        if (storedEnchants != null && !storedEnchants.isEmpty()) {
+            var first = storedEnchants.getEnchantmentEntries().iterator().next();
+            var key = first.getKey().getKey();
+            if (key.isPresent()) {
+                return key.get().getValue();
+            }
+        }
+
+        return Registries.ITEM.getId(stack.getItem());
+    }
+
+
+
 
     @Override
     public void reload(ResourceManager manager) {
@@ -108,6 +134,6 @@ public class ItemVersionLoader implements SynchronousResourceReloader {
         }
 
         String list = missing.stream().map(id -> "\"" + id + "\": \"\",").collect(java.util.stream.Collectors.joining("\n"));
-        System.out.println("[VersionTooltips] " + missing.size() + " item(s) missing version data:\n" + list);
+        System.out.println("[VersionTooltips] " + missing.size() + " item(s) missing version and/or snapshot data:\n" + list);
     }
 }
