@@ -9,8 +9,7 @@
 		"Nicole.srt"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/nicolesrt/VersionTooltips"
 	},
 	"license": "CC-NC-4.0",
 	"icon": "assets/versiontooltips/VersionTooltipsIcon128x128.png",
@@ -30,9 +29,10 @@
 		"fabricloader": ">=0.18.1",
 		"minecraft": "1.21.11",
 		"java": ">=21",
-		"fabric-api": ">=0.141.4"
+		"fabric-api": ">=0.141.4+1.21.11"
 	},
 	"suggests": {
-		"another-mod": "*"
+		"modmenu": "*",
+		"cloth_config": "*"
 	}
 }

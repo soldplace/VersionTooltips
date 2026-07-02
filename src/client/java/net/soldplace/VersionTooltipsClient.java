@@ -18,8 +18,6 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import org.lwjgl.glfw.GLFW;
 
-import static org.apache.commons.lang3.BooleanUtils.and;
-
 
 public class VersionTooltipsClient implements ClientModInitializer {
 	private static final java.util.Set<Identifier> MISSING_REPORTED = new java.util.HashSet<>();
