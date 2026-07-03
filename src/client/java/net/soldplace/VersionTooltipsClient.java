@@ -3,6 +3,7 @@ package net.soldplace;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
@@ -31,6 +32,10 @@ public class VersionTooltipsClient implements ClientModInitializer {
 
 		ResourceLoader.get(ResourceType.CLIENT_RESOURCES)
 				.registerReloader(Identifier.of("versiontooltips", "item_versions"), new ItemVersionLoader());
+
+		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+			ItemVersionLoader.reportMissingEnchantments(handler.getRegistryManager());
+		});
 
 		SHOW_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 				"key.versiontooltips.show", // Translation key for the name

@@ -702,7 +702,13 @@
   "minecraft:wind_charged_normal": "1.21",
   "minecraft:wind_charged_splash": "1.21",
   "minecraft:wind_charged_lingering": "1.21",
-  "minecraft:wind_charged_tipped": "1.21"
+  "minecraft:wind_charged_tipped": "1.21",
 
+  "minecraft:efficiency": "",
+  "minecraft:sweeping_edge": "",
+  "minecraft:looting": "",
+  "minecraft:quick_charge": "",
+  "minecraft:silk_touch": "",
+  "minecraft:soul_speed": ""
 
 }

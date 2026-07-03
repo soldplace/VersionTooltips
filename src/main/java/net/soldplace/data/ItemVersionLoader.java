@@ -161,7 +161,27 @@ public class ItemVersionLoader implements SynchronousResourceReloader {
             System.out.println("[VersionTooltips] " + missingPotions.size() + " potion(s) missing version data:\n" + String.join("\n", missingPotions));
         }
 
-//        String list = missingItems.stream().map(id -> "\"" + id + "\": \"\",").collect(java.util.stream.Collectors.joining("\n"));
-//        System.out.println("[VersionTooltips] " + missing.size() + " item(s) missing version and/or snapshot data:\n" + list);
+
     }
+    public static void reportMissingEnchantments(net.minecraft.registry.DynamicRegistryManager registryManager) {
+        var enchantmentRegistry = registryManager.getOrThrow(net.minecraft.registry.RegistryKeys.ENCHANTMENT);
+        List<String> missing = new ArrayList<>();
+
+        for (Identifier id : enchantmentRegistry.getIds()) {
+            String version = ITEM_VERSIONS_VERSION.get(id);
+            String snapshot = ITEM_VERSIONS_SNAPSHOT.get(id);
+
+            if (version == null || snapshot == null) {
+                missing.add(id.toString());
+            }
+        }
+
+        if (missing.isEmpty()) {
+            System.out.println("[VersionTooltips] No missing enchantments - every enchantment has version data.");
+            return;
+        }
+
+        System.out.println("[VersionTooltips] " + missing.size() + " enchantment(s) missing version data:\n" + String.join("\n", missing));
+    }
+
 }
