@@ -110,7 +110,8 @@ public class ItemVersionLoader implements SynchronousResourceReloader {
     }
 
     public static void reportMissingEntries() {
-        List<String> missing = new ArrayList<>();
+        List<String> missingItems = new ArrayList<>();
+        List<String> missingPotions = new ArrayList<>();
 
         for (Identifier id : Registries.ITEM.getIds()) {
             String version = BLOCK_VERSIONS_VERSION.get(id);
@@ -124,16 +125,35 @@ public class ItemVersionLoader implements SynchronousResourceReloader {
             }
 
             if (version == null || snapshot == null) {
-                missing.add(id.toString());
+                missingItems.add(id.toString());
+            }
+        }
+        // Potions logic
+        for (Identifier id : Registries.POTION.getIds()) {
+            if (id.getPath().equals("empty")) continue;
+
+            String version = ITEM_VERSIONS_VERSION.get(id);
+            String snapshot = ITEM_VERSIONS_SNAPSHOT.get(id);
+
+            if (version == null || snapshot == null) {
+                missingPotions.add(id.toString());
             }
         }
 
-        if (missing.isEmpty()) {
+        if (missingItems.isEmpty() && missingPotions.isEmpty()) {
             System.out.println("[VersionTooltips] No missing entries — every item has version data.");
             return;
         }
 
-        String list = missing.stream().map(id -> "\"" + id + "\": \"\",").collect(java.util.stream.Collectors.joining("\n"));
-        System.out.println("[VersionTooltips] " + missing.size() + " item(s) missing version and/or snapshot data:\n" + list);
+        if (!missingItems.isEmpty()) {
+            System.out.println("[VersionTooltips] " + missingItems.size() + " item(s) missing version data:\n" + String.join("\n", missingItems));
+        }
+
+        if (!missingPotions.isEmpty()) {
+            System.out.println("[VersionTooltips] " + missingPotions.size() + " potion(s) missing version data:\n" + String.join("\n", missingPotions));
+        }
+
+//        String list = missingItems.stream().map(id -> "\"" + id + "\": \"\",").collect(java.util.stream.Collectors.joining("\n"));
+//        System.out.println("[VersionTooltips] " + missing.size() + " item(s) missing version and/or snapshot data:\n" + list);
     }
 }
