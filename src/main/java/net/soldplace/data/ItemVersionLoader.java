@@ -35,7 +35,14 @@ public class ItemVersionLoader implements SynchronousResourceReloader {
         if (potionContents != null && potionContents.potion().isPresent()) {
             var key = potionContents.potion().get().getKey();
             if (key.isPresent()) {
-                return key.get().getValue();
+                Identifier effectId = key.get().getValue();
+                String containerSuffix = switch (Registries.ITEM.getId(stack.getItem()).getPath()) {
+                    case "splash_potion"    -> "_splash";
+                    case "lingering_potion" -> "_lingering";
+                    case "tipped_arrow"     -> "_tipped";
+                    default                 -> "_normal";
+                };
+                return Identifier.of(effectId.getNamespace(), effectId.getPath() + containerSuffix);
             }
         }
 
@@ -131,17 +138,18 @@ public class ItemVersionLoader implements SynchronousResourceReloader {
         // Potions logic
         for (Identifier id : Registries.POTION.getIds()) {
             if (id.getPath().equals("empty")) continue;
-
-            String version = ITEM_VERSIONS_VERSION.get(id);
-            String snapshot = ITEM_VERSIONS_SNAPSHOT.get(id);
-
-            if (version == null || snapshot == null) {
-                missingPotions.add(id.toString());
+            for (String suffix : new String[]{"_normal", "_splash", "_lingering", "_tipped"}) {
+                Identifier compoundId = Identifier.of(id.getNamespace(), id.getPath() + suffix);
+                String version = ITEM_VERSIONS_VERSION.get(compoundId);
+                String snapshot = ITEM_VERSIONS_SNAPSHOT.get(compoundId);
+                if (version == null || snapshot == null) {
+                    missingPotions.add(compoundId.toString());
+                }
             }
         }
 
         if (missingItems.isEmpty() && missingPotions.isEmpty()) {
-            System.out.println("[VersionTooltips] No missing entries — every item has version data.");
+            System.out.println("[VersionTooltips] No missing entries - every item has version data.");
             return;
         }
 
