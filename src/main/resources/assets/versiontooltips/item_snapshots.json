@@ -701,5 +701,65 @@
   "minecraft:wind_charged_normal": "24w13a",
   "minecraft:wind_charged_splash": "24w13a",
   "minecraft:wind_charged_lingering": "24w13a",
-  "minecraft:wind_charged_tipped": "24w13a"
+  "minecraft:wind_charged_tipped": "24w13a",
+
+
+
+  "minecraft:aqua_affinity": "Beta 1.9 Prerelease 4",
+  "minecraft:bane_of_arthropods": "Beta 1.9 Prerelease 4",
+  "minecraft:blast_protection": "Beta 1.9 Prerelease 4",
+  "minecraft:efficiency": "Beta 1.9 Prerelease 4",
+  "minecraft:feather_falling": "Beta 1.9 Prerelease 4",
+  "minecraft:fire_protection": "Beta 1.9 Prerelease 4",
+  "minecraft:fire_aspect": "Beta 1.9 Prerelease 4",
+  "minecraft:fortune": "Beta 1.9 Prerelease 4",
+  "minecraft:knockback": "Beta 1.9 Prerelease 4",
+  "minecraft:looting": "Beta 1.9 Prerelease 4",
+  "minecraft:projectile_protection": "Beta 1.9 Prerelease 4",
+  "minecraft:protection": "Beta 1.9 Prerelease 4",
+  "minecraft:respiration": "Beta 1.9 Prerelease 4",
+  "minecraft:sharpness": "Beta 1.9 Prerelease 4",
+  "minecraft:silk_touch": "Beta 1.9 Prerelease 4",
+  "minecraft:smite": "Beta 1.9 Prerelease 4",
+  "minecraft:unbreaking": "Beta 1.9 Prerelease 4",
+
+
+  "minecraft:flame": "1.1",
+  "minecraft:punch": "1.1",
+  "minecraft:power": "1.1",
+  "minecraft:infinity": "1.1",
+
+  "minecraft:thorns": "12w50a",
+
+  "minecraft:luck_of_the_sea": "13w36a",
+  "minecraft:lure": "13w36a",
+
+  "minecraft:depth_strider": "14w25a",
+
+  "minecraft:mending": "15w42a",
+  "minecraft:frost_walker": "15w42a",
+
+  "minecraft:binding_curse": "16w39a",
+  "minecraft:vanishing_curse": "16w39a",
+
+  "minecraft:sweeping_edge": "16w50a",
+
+  "minecraft:channeling": "18w07a",
+  "minecraft:loyalty": "18w07a",
+  "minecraft:impaling": "18w07a",
+  "minecraft:riptide": "18w07a",
+
+  "minecraft:quick_charge": "18w43a",
+  "minecraft:multishot": "18w43a",
+  "minecraft:piercing": "18w43a",
+
+  "minecraft:soul_speed": "20w11a",
+
+  "minecraft:swift_sneak": "Deep Dark Experimental Snapshot 1",
+
+  "minecraft:breach": "24w13a",
+  "minecraft:density": "24w13a",
+  "minecraft:wind_burst": "24w13a",
+
+  "minecraft:lunge": "25w41a"
 }
