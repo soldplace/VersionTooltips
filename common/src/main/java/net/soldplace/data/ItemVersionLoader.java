@@ -2,12 +2,13 @@ package net.soldplace.data;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.SynchronousResourceReloader;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.resources.Identifier;
+import org.jspecify.annotations.NonNull;
 
 
 import java.io.InputStreamReader;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ItemVersionLoader implements SynchronousResourceReloader {
+public class ItemVersionLoader implements ResourceManagerReloadListener {
 
     public static Map<Identifier, String> BLOCK_VERSIONS_SNAPSHOT = new HashMap<>();
     public static Map<Identifier, String> ITEM_VERSIONS_SNAPSHOT = new HashMap<>();
@@ -27,86 +28,85 @@ public class ItemVersionLoader implements SynchronousResourceReloader {
     private static final Type TYPE = new TypeToken<Map<String, String>>(){}.getType();
 
     public Identifier getFabricId() {
-        return Identifier.of("versiontooltips", "item_versions");
+        return Identifier.fromNamespaceAndPath("versiontooltips", "item_versions");
     }
 
     public static Identifier getEffectiveId(ItemStack stack) {
-        var potionContents = stack.get(DataComponentTypes.POTION_CONTENTS);
+        var potionContents = stack.get(DataComponents.POTION_CONTENTS);
         if (potionContents != null && potionContents.potion().isPresent()) {
-            var key = potionContents.potion().get().getKey();
+            var key = potionContents.potion().get().unwrapKey();
             if (key.isPresent()) {
-                Identifier effectId = key.get().getValue();
-                String containerSuffix = switch (Registries.ITEM.getId(stack.getItem()).getPath()) {
+                Identifier effectId = key.get().identifier();
+                String containerSuffix = switch (BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath()) {
                     case "splash_potion"    -> "_splash";
                     case "lingering_potion" -> "_lingering";
                     case "tipped_arrow"     -> "_tipped";
                     default                 -> "_normal";
                 };
-                return Identifier.of(effectId.getNamespace(), effectId.getPath() + containerSuffix);
+                return Identifier.fromNamespaceAndPath(effectId.getNamespace(), effectId.getPath() + containerSuffix);
             }
         }
 
-        var storedEnchants = stack.get(DataComponentTypes.STORED_ENCHANTMENTS);
+        var storedEnchants = stack.get(DataComponents.STORED_ENCHANTMENTS);
         if (storedEnchants != null && !storedEnchants.isEmpty()) {
-            var first = storedEnchants.getEnchantmentEntries().iterator().next();
-            var key = first.getKey().getKey();
+            var first = storedEnchants.entrySet().iterator().next().getKey();
+            var key = first.unwrapKey();
             if (key.isPresent()) {
-                return key.get().getValue();
+                return key.get().identifier();
             }
         }
 
-        return Registries.ITEM.getId(stack.getItem());
+        return BuiltInRegistries.ITEM.getKey(stack.getItem());
     }
 
 
 
 
-    @Override
     public void reload(ResourceManager manager) {
         BLOCK_VERSIONS_SNAPSHOT.clear();
         ITEM_VERSIONS_SNAPSHOT.clear();
         BLOCK_VERSIONS_VERSION.clear();
         ITEM_VERSIONS_VERSION.clear();
 
-        manager.getResource(Identifier.of("versiontooltips", "block_snapshots.json"))
+        manager.getResource(Identifier.fromNamespaceAndPath("versiontooltips", "block_snapshots.json"))
                 .ifPresent(resource -> {
-                    try (var reader = new InputStreamReader(resource.getInputStream())) {
+                    try (var reader = new InputStreamReader(resource.open())) {
                         Map<String, String> raw = GSON.fromJson(reader, TYPE);
                         raw.forEach((key, value) ->
-                                BLOCK_VERSIONS_SNAPSHOT.put(Identifier.of(key), value)
+                                BLOCK_VERSIONS_SNAPSHOT.put(Identifier.parse(key), value)
                         );
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
-        manager.getResource(Identifier.of("versiontooltips", "item_snapshots.json"))
+        manager.getResource(Identifier.fromNamespaceAndPath("versiontooltips", "item_snapshots.json"))
                 .ifPresent(resource -> {
-                    try (var reader = new InputStreamReader(resource.getInputStream())) {
+                    try (var reader = new InputStreamReader(resource.open())) {
                         Map<String, String> raw = GSON.fromJson(reader, TYPE);
                         raw.forEach((key, value) ->
-                                ITEM_VERSIONS_SNAPSHOT.put(Identifier.of(key), value)
+                                ITEM_VERSIONS_SNAPSHOT.put(Identifier.parse(key), value)
                         );
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
-        manager.getResource(Identifier.of("versiontooltips", "block_versions.json"))
+        manager.getResource(Identifier.fromNamespaceAndPath("versiontooltips", "block_versions.json"))
                 .ifPresent(resource -> {
-                    try (var reader = new InputStreamReader(resource.getInputStream())) {
+                    try (var reader = new InputStreamReader(resource.open())) {
                         Map<String, String> raw = GSON.fromJson(reader, TYPE);
                         raw.forEach((key, value) ->
-                                BLOCK_VERSIONS_VERSION.put(Identifier.of(key), value)
+                                BLOCK_VERSIONS_VERSION.put(Identifier.parse(key), value)
                         );
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
-        manager.getResource(Identifier.of("versiontooltips", "item_versions.json"))
+        manager.getResource(Identifier.fromNamespaceAndPath("versiontooltips", "item_versions.json"))
                 .ifPresent(resource -> {
-                    try (var reader = new InputStreamReader(resource.getInputStream())) {
+                    try (var reader = new InputStreamReader(resource.open())) {
                         Map<String, String> raw = GSON.fromJson(reader, TYPE);
                         raw.forEach((key, value) ->
-                                ITEM_VERSIONS_VERSION.put(Identifier.of(key), value)
+                                ITEM_VERSIONS_VERSION.put(Identifier.parse(key), value)
                         );
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -120,7 +120,7 @@ public class ItemVersionLoader implements SynchronousResourceReloader {
         List<String> missingItems = new ArrayList<>();
         List<String> missingPotions = new ArrayList<>();
 
-        for (Identifier id : Registries.ITEM.getIds()) {
+        for (Identifier id : BuiltInRegistries.ITEM.keySet()) {
             String version = BLOCK_VERSIONS_VERSION.get(id);
             if (version == null) {
                 version = ITEM_VERSIONS_VERSION.get(id);
@@ -136,10 +136,10 @@ public class ItemVersionLoader implements SynchronousResourceReloader {
             }
         }
         // Potions logic
-        for (Identifier id : Registries.POTION.getIds()) {
+        for (Identifier id : BuiltInRegistries.POTION.keySet()) {
             if (id.getPath().equals("empty")) continue;
             for (String suffix : new String[]{"_normal", "_splash", "_lingering", "_tipped"}) {
-                Identifier compoundId = Identifier.of(id.getNamespace(), id.getPath() + suffix);
+                Identifier compoundId = Identifier.fromNamespaceAndPath(id.getNamespace(), id.getPath() + suffix);
                 String version = ITEM_VERSIONS_VERSION.get(compoundId);
                 String snapshot = ITEM_VERSIONS_SNAPSHOT.get(compoundId);
                 if (version == null || snapshot == null) {
@@ -163,11 +163,11 @@ public class ItemVersionLoader implements SynchronousResourceReloader {
 
 
     }
-    public static void reportMissingEnchantments(net.minecraft.registry.DynamicRegistryManager registryManager) {
-        var enchantmentRegistry = registryManager.getOrThrow(net.minecraft.registry.RegistryKeys.ENCHANTMENT);
+    public static void reportMissingEnchantments(net.minecraft.core.RegistryAccess registryManager) {
+        var enchantmentRegistry = registryManager.getOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT);
         List<String> missing = new ArrayList<>();
 
-        for (Identifier id : enchantmentRegistry.getIds()) {
+        for (Identifier id : enchantmentRegistry.value().keySet()) {
             String version = ITEM_VERSIONS_VERSION.get(id);
             String snapshot = ITEM_VERSIONS_SNAPSHOT.get(id);
 
@@ -184,4 +184,8 @@ public class ItemVersionLoader implements SynchronousResourceReloader {
         System.out.println("[VersionTooltips] " + missing.size() + " enchantment(s) missing version data:\n" + String.join("\n", missing));
     }
 
+    @Override
+    public void onResourceManagerReload(ResourceManager resourceManager) {
+
+    }
 }
