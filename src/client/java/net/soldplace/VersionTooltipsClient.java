@@ -29,7 +29,7 @@ public class VersionTooltipsClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		AutoConfig.register(VersionTooltipsConfig.class, GsonConfigSerializer::new);
-
+		ModCommands.register();
 		ResourceLoader.get(ResourceType.CLIENT_RESOURCES)
 				.registerReloader(Identifier.of("versiontooltips", "item_versions"), new ItemVersionLoader());
 
