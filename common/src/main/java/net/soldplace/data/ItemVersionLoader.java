@@ -184,8 +184,5 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
         System.out.println("[VersionTooltips] " + missing.size() + " enchantment(s) missing version data:\n" + String.join("\n", missing));
     }
 
-    @Override
-    public void onResourceManagerReload(ResourceManager resourceManager) {
 
-    }
 }
