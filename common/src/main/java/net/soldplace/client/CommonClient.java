@@ -1,4 +1,4 @@
-package net.soldplace;
+package net.soldplace.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.registry.ReloadListenerRegistry;
@@ -21,15 +21,13 @@ public class CommonClient {
 
     public static void init() {
         AutoConfig.register(VersionTooltipsConfig.class, GsonConfigSerializer::new);
-
         SHOW_KEY = new KeyMapping(
                 "key.versiontooltips.show",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_LEFT_SHIFT,
-                "key.categories.versiontooltips"
+                new KeyMapping.Category(Identifier.fromNamespaceAndPath("versiontooltips", "main"))
         );
         KeyMappingRegistry.register(SHOW_KEY);
-
         ReloadListenerRegistry.register(
                 PackType.CLIENT_RESOURCES,
                 new ItemVersionLoader(),

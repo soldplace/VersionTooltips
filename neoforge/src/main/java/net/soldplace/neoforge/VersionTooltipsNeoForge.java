@@ -1,55 +1,30 @@
 package net.soldplace.neoforge;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import dev.architectury.registry.ReloadListenerRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.soldplace.client.CommonClient;
 import net.soldplace.config.VersionTooltipsConfig;
 import net.soldplace.data.ItemVersionLoader;
-import org.lwjgl.glfw.GLFW;
 
 @Mod("versiontooltips")
 public class VersionTooltipsNeoForge {
 
-    public static KeyMapping SHOW_KEY;
-
     public VersionTooltipsNeoForge(IEventBus modEventBus) {
-        AutoConfig.register(VersionTooltipsConfig.class, GsonConfigSerializer::new);
-
-        // Mod bus — fires once during setup
-        modEventBus.addListener(this::registerKeyMappings);
-        modEventBus.addListener(this::registerReloadListeners);
-
-        // NeoForge bus — fires at runtime
-        NeoForge.EVENT_BUS.addListener(this::onTooltip);
-        NeoForge.EVENT_BUS.addListener(this::onPlayerJoin);
+        if (FMLEnvironment.getDist().isClient()) {
+            CommonClient.init();
+            NeoForge.EVENT_BUS.addListener(this::onTooltip);
+            NeoForge.EVENT_BUS.addListener(this::onPlayerJoin);
+        }
     }
 
-    private void registerKeyMappings(RegisterKeyMappingsEvent event) {
-        SHOW_KEY = new KeyMapping(
-                "key.versiontooltips.show",
-                InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_LEFT_SHIFT,
-                KeyMapping.Category.register(Identifier.parse("key.categories.versiontooltips"))
-        );
-        event.register(SHOW_KEY);
-    }
-
-    private void registerReloadListeners(AddClientReloadListenersEvent event) {
-        event.addListener(new ItemVersionLoader());
-    }
 
     private void onPlayerJoin(ClientPlayerNetworkEvent.LoggingIn event) {
         if (Minecraft.getInstance().getConnection() != null) {
@@ -64,7 +39,7 @@ public class VersionTooltipsNeoForge {
 
         if (!config.modActive) return;
         if (config.onlyShowWithAdvancedTooltips && !Minecraft.getInstance().options.advancedItemTooltips) return;
-        if (config.requireKeybind && !SHOW_KEY.isDown()) return;
+        if (config.requireKeybind && !CommonClient.SHOW_KEY.isDown()) return;
 
         var id = ItemVersionLoader.getEffectiveId(event.getItemStack());
         var lines = event.getToolTip();

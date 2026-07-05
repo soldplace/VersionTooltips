@@ -26,10 +26,6 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
     private static final Gson GSON = new Gson();
     private static final Type TYPE = new TypeToken<Map<String, String>>(){}.getType();
 
-    public Identifier getFabricId() {
-        return Identifier.fromNamespaceAndPath("versiontooltips", "item_versions");
-    }
-
     public static Identifier getEffectiveId(ItemStack stack) {
         var potionContents = stack.get(DataComponents.POTION_CONTENTS);
         if (potionContents != null && potionContents.potion().isPresent()) {
@@ -57,9 +53,6 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
 
         return BuiltInRegistries.ITEM.getKey(stack.getItem());
     }
-
-
-
 
     public void reload(ResourceManager manager) {
         BLOCK_VERSIONS_SNAPSHOT.clear();
