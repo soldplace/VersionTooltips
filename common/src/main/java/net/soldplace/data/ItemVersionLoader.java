@@ -185,4 +185,8 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
     }
 
 
+    @Override
+    public void onResourceManagerReload(ResourceManager resourceManager) {
+        reload(resourceManager);
+    }
 }
