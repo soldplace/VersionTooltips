@@ -8,7 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.resources.Identifier;
-import org.jspecify.annotations.NonNull;
 
 
 import java.io.InputStreamReader;

@@ -8,7 +8,7 @@ import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.resources.RegistryDataLoader;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.soldplace.config.VersionTooltipsConfig;
 import net.soldplace.data.ItemVersionLoader;
@@ -33,7 +33,7 @@ public class CommonClient {
         ReloadListenerRegistry.register(
                 PackType.CLIENT_RESOURCES,
                 new ItemVersionLoader(),
-                ResourceLocation.fromNamespaceAndPath("versiontooltips", "item_versions")
+                Identifier.fromNamespaceAndPath("versiontooltips", "item_versions")
         );
     }
 }
