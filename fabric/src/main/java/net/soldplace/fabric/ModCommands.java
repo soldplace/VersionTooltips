@@ -110,7 +110,7 @@ public class ModCommands {
                                     )
                             )
 
-                            .then(ClientCommandManager.literal("advancedonly")
+                            .then(ClientCommandManager.literal("advancedtooltips")
                                     .then(ClientCommandManager.argument("value", BoolArgumentType.bool())
                                             .executes(ctx -> {
                                                 boolean value = BoolArgumentType.getBool(ctx, "value");

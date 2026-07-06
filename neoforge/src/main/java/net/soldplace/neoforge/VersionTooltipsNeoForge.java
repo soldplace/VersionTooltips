@@ -8,6 +8,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.soldplace.client.CommonClient;
@@ -20,6 +21,13 @@ public class VersionTooltipsNeoForge {
     public VersionTooltipsNeoForge(IEventBus modEventBus) {
         if (FMLEnvironment.getDist().isClient()) {
             CommonClient.init();
+
+            container.registerExtensionPoint(
+                    IConfigScreenFactory.class,
+                    () -> (minecraft, parent) ->
+                            AutoConfig.getConfigScreen(VersionTooltipsConfig.class, parent).get()
+            );
+
             NeoForge.EVENT_BUS.addListener(this::onTooltip);
             NeoForge.EVENT_BUS.addListener(this::onPlayerJoin);
         }
