@@ -156,10 +156,10 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
 
     }
     public static void reportMissingEnchantments(net.minecraft.core.RegistryAccess registryManager) {
-        var enchantmentRegistry = registryManager.getOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT);
+        var enchantmentRegistry = registryManager.lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT);
         List<String> missing = new ArrayList<>();
 
-        for (Identifier id : enchantmentRegistry.value().keySet()) {
+        for (Identifier id : enchantmentRegistry.keySet()) {
             String version = ITEM_VERSIONS_VERSION.get(id);
             String snapshot = ITEM_VERSIONS_SNAPSHOT.get(id);
 

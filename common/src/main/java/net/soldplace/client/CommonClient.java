@@ -14,11 +14,8 @@ import net.soldplace.config.VersionTooltipsConfig;
 import net.soldplace.data.ItemVersionLoader;
 import org.lwjgl.glfw.GLFW;
 
-@Environment(EnvType.CLIENT)
 public class CommonClient {
-
     public static KeyMapping SHOW_KEY;
-
     public static void init() {
         AutoConfig.register(VersionTooltipsConfig.class, GsonConfigSerializer::new);
         SHOW_KEY = new KeyMapping(
