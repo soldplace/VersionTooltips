@@ -1,4 +1,4 @@
-package net.soldplace;
+package net.soldplace.fabric;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -20,7 +20,6 @@ import org.lwjgl.glfw.GLFW;
 import net.soldplace.ModCommands;
 
 public class VersionTooltipsClient implements ClientModInitializer {
-	private static final java.util.Set<Identifier> MISSING_REPORTED = new java.util.HashSet<>();
 	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(
 			Identifier.fromNamespaceAndPath("versiontooltips", "main")
 	);

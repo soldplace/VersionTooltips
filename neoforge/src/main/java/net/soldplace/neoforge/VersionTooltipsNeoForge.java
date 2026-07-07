@@ -1,20 +1,17 @@
 package net.soldplace.neoforge;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.resources.Identifier;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.soldplace.client.CommonClient;
 import net.soldplace.config.VersionTooltipsConfig;
 import net.soldplace.data.ItemVersionLoader;
-
-import com.mojang.blaze3d.platform.InputConstants;
-
 import me.shedaniel.autoconfig.AutoConfigClient;
 import me.shedaniel.autoconfig.AutoConfig;
-
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -22,11 +19,9 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
-
 import org.lwjgl.glfw.GLFW;
 
 @Mod("versiontooltips")
@@ -39,7 +34,6 @@ public class VersionTooltipsNeoForge {
         }
         CommonClient.init();
         modEventBus.addListener((FMLClientSetupEvent event) -> clientSetup());
-        modEventBus.addListener(this::registerKeyMappings);
     }
 
     private static class ClientSetup {
@@ -57,6 +51,12 @@ public class VersionTooltipsNeoForge {
         NeoForge.EVENT_BUS.addListener(this::onTooltip);
         NeoForge.EVENT_BUS.addListener(this::onPlayerJoin);
         NeoForge.EVENT_BUS.addListener(this::registerClientCommands);
+        NeoForge.EVENT_BUS.addListener(this::registerKeyMappings);
+    }
+
+
+    private void registerClientCommands(RegisterClientCommandsEvent event) {
+        ModCommandsNeoForge.register(event.getDispatcher());
     }
 
     private void registerKeyMappings(RegisterKeyMappingsEvent event) {
@@ -69,10 +69,6 @@ public class VersionTooltipsNeoForge {
         event.register(CommonClient.SHOW_KEY);
     }
 
-    private void registerClientCommands(RegisterClientCommandsEvent event) {
-        ModCommandsNeoForge.register(event.getDispatcher());
-    }
-
     private void onPlayerJoin(ClientPlayerNetworkEvent.LoggingIn event) {
         if (Minecraft.getInstance().getConnection() != null) {
             ItemVersionLoader.reportMissingEnchantments(
@@ -83,15 +79,11 @@ public class VersionTooltipsNeoForge {
 
     private void onTooltip(ItemTooltipEvent event) {
         if (config == null) return;
-
-        // DEBUG POINT 1: Check Config booleans
         if (!config.modActive) return;
-
         if (config.onlyShowWithAdvancedTooltips && !Minecraft.getInstance().options.advancedItemTooltips) return;
         if (config.requireKeybind && CommonClient.SHOW_KEY != null && !CommonClient.SHOW_KEY.isDown()) return;
 
         var id = ItemVersionLoader.getEffectiveId(event.getItemStack());
-
         if (id == null) return;
 
         var lines = event.getToolTip();

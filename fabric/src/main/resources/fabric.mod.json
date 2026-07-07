@@ -15,11 +15,8 @@
 	"icon": "assets/versiontooltips/VersionTooltipsIcon128x128.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [
-			"net.soldplace.VersionTooltips"
-		],
 		"client": [
-			"net.soldplace.VersionTooltipsClient"
+			"net.soldplace.fabric.VersionTooltipsClient"
 		],
 		"modmenu": [
 			"net.soldplace.config.ModMenuIntegration"
