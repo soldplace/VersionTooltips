@@ -1,45 +1,58 @@
 package net.soldplace.neoforge;
 
+import net.soldplace.client.CommonClient;
+import net.soldplace.config.VersionTooltipsConfig;
+import net.soldplace.data.ItemVersionLoader;
+
 import com.mojang.blaze3d.platform.InputConstants;
+
+import me.shedaniel.autoconfig.AutoConfigClient;
 import me.shedaniel.autoconfig.AutoConfig;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
-import net.soldplace.client.CommonClient;
-import net.soldplace.config.VersionTooltipsConfig;
-import net.soldplace.data.ItemVersionLoader;
+
 import org.lwjgl.glfw.GLFW;
 
 @Mod("versiontooltips")
 public class VersionTooltipsNeoForge {
+    private static VersionTooltipsConfig config;
 
     public VersionTooltipsNeoForge(IEventBus modEventBus, ModContainer modContainer) {
-        // FMLClientSetupEvent only fires on the physical client — no dist check needed
-        modEventBus.addListener((FMLClientSetupEvent event) -> clientSetup(modContainer));
-
-        // RegisterKeyMappingsEvent fires before FMLClientSetupEvent, so must be registered here
+        if (FMLEnvironment.getDist().isClient()) {
+            ClientSetup.registerConfigScreen(modContainer);
+        }
+        CommonClient.init();
+        modEventBus.addListener((FMLClientSetupEvent event) -> clientSetup());
         modEventBus.addListener(this::registerKeyMappings);
     }
 
-    private void clientSetup(ModContainer modContainer) {
-        CommonClient.init();
+    private static class ClientSetup {
+        private static void registerConfigScreen(ModContainer modContainer) {
+            modContainer.registerExtensionPoint(
+                    IConfigScreenFactory.class,
+                    (mc, parent) -> AutoConfigClient.getConfigScreen(VersionTooltipsConfig.class, parent).get()
+            );
+        }
+    }
 
-        modContainer.registerExtensionPoint(
-                IConfigScreenFactory.class,
-                (container, parent) -> AutoConfig.getConfigScreen(VersionTooltipsConfig.class, parent).get()
-        );
+    private void clientSetup() {
+        config = AutoConfig.getConfigHolder(VersionTooltipsConfig.class).get();
 
         NeoForge.EVENT_BUS.addListener(this::onTooltip);
         NeoForge.EVENT_BUS.addListener(this::onPlayerJoin);
@@ -69,18 +82,26 @@ public class VersionTooltipsNeoForge {
     }
 
     private void onTooltip(ItemTooltipEvent event) {
-        var config = AutoConfig.getConfigHolder(VersionTooltipsConfig.class).getConfig();
+        if (config == null) return;
 
+        // DEBUG POINT 1: Check Config booleans
         if (!config.modActive) return;
+
         if (config.onlyShowWithAdvancedTooltips && !Minecraft.getInstance().options.advancedItemTooltips) return;
         if (config.requireKeybind && CommonClient.SHOW_KEY != null && !CommonClient.SHOW_KEY.isDown()) return;
 
         var id = ItemVersionLoader.getEffectiveId(event.getItemStack());
+
+        if (id == null) return;
+
         var lines = event.getToolTip();
+        String snapshot = ItemVersionLoader.BLOCK_VERSIONS_SNAPSHOT.get(id);
+        if (snapshot == null) snapshot = ItemVersionLoader.ITEM_VERSIONS_SNAPSHOT.get(id);
+
+        String version = ItemVersionLoader.BLOCK_VERSIONS_VERSION.get(id);
+        if (version == null) version = ItemVersionLoader.ITEM_VERSIONS_VERSION.get(id);
 
         if (config.type == VersionTooltipsConfig.TooltipType.SnapshotOnly) {
-            String snapshot = ItemVersionLoader.BLOCK_VERSIONS_SNAPSHOT.get(id);
-            if (snapshot == null) snapshot = ItemVersionLoader.ITEM_VERSIONS_SNAPSHOT.get(id);
             if (snapshot == null) return;
             if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
                 lines.add(Component.literal("+ ").withStyle(ChatFormatting.RED)
@@ -91,8 +112,6 @@ public class VersionTooltipsNeoForge {
         }
 
         if (config.type == VersionTooltipsConfig.TooltipType.VersionOnly) {
-            String version = ItemVersionLoader.BLOCK_VERSIONS_VERSION.get(id);
-            if (version == null) version = ItemVersionLoader.ITEM_VERSIONS_VERSION.get(id);
             if (version == null) return;
             if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
                 lines.add(Component.literal("+ ").withStyle(ChatFormatting.BLUE)
@@ -103,10 +122,6 @@ public class VersionTooltipsNeoForge {
         }
 
         if (config.type == VersionTooltipsConfig.TooltipType.VersionSnapshot) {
-            String version = ItemVersionLoader.BLOCK_VERSIONS_VERSION.get(id);
-            String snapshot = ItemVersionLoader.BLOCK_VERSIONS_SNAPSHOT.get(id);
-            if (version == null) version = ItemVersionLoader.ITEM_VERSIONS_VERSION.get(id);
-            if (snapshot == null) snapshot = ItemVersionLoader.ITEM_VERSIONS_SNAPSHOT.get(id);
             if (version == null || snapshot == null) return;
             if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
                 lines.add(Component.literal("+ ").withStyle(ChatFormatting.GREEN)
@@ -117,10 +132,6 @@ public class VersionTooltipsNeoForge {
         }
 
         if (config.type == VersionTooltipsConfig.TooltipType.SnapshotVersion) {
-            String version = ItemVersionLoader.BLOCK_VERSIONS_VERSION.get(id);
-            String snapshot = ItemVersionLoader.BLOCK_VERSIONS_SNAPSHOT.get(id);
-            if (version == null) version = ItemVersionLoader.ITEM_VERSIONS_VERSION.get(id);
-            if (snapshot == null) snapshot = ItemVersionLoader.ITEM_VERSIONS_SNAPSHOT.get(id);
             if (version == null || snapshot == null) return;
             if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
                 lines.add(Component.literal("+ ").withStyle(ChatFormatting.GREEN)

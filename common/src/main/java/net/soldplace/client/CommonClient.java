@@ -5,8 +5,6 @@ import dev.architectury.registry.ReloadListenerRegistry;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
@@ -18,6 +16,9 @@ public class CommonClient {
     public static KeyMapping SHOW_KEY;
     public static void init() {
         AutoConfig.register(VersionTooltipsConfig.class, GsonConfigSerializer::new);
+
+
+
         SHOW_KEY = new KeyMapping(
                 "key.versiontooltips.show",
                 InputConstants.Type.KEYSYM,
@@ -30,5 +31,7 @@ public class CommonClient {
                 new ItemVersionLoader(),
                 Identifier.fromNamespaceAndPath("versiontooltips", "item_versions")
         );
+
+
     }
 }
