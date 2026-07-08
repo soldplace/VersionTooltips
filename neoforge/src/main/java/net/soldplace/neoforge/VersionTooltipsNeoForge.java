@@ -3,6 +3,7 @@ package net.soldplace.neoforge;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.soldplace.client.CommonClient;
 import net.soldplace.config.VersionTooltipsConfig;
@@ -63,9 +64,8 @@ public class VersionTooltipsNeoForge {
 
     private void onPlayerJoin(ClientPlayerNetworkEvent.LoggingIn event) {
         if (Minecraft.getInstance().getConnection() != null) {
-            ItemVersionLoader.reportMissingEnchantments(
-                    Minecraft.getInstance().getConnection().registryAccess()
-            );
+            ItemVersionLoader.reportMissingEnchantments(Minecraft.getInstance().getConnection().registryAccess());
+            ItemVersionLoader.reportMissingPaintings(Minecraft.getInstance().getConnection().registryAccess());
         }
     }
 

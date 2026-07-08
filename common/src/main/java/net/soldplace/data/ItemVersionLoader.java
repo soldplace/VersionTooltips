@@ -190,11 +190,12 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
         List<String> missingA = new ArrayList<>();
 
         for (Identifier id : paintingRegistry.keySet()) {
-            String version = ITEM_VERSIONS_VERSION.get(id);
-            String snapshot = ITEM_VERSIONS_SNAPSHOT.get(id);
+            Identifier compoundId = Identifier.parse(id + "_painting");
+            String version = ITEM_VERSIONS_VERSION.get(compoundId);
+            String snapshot = ITEM_VERSIONS_SNAPSHOT.get(compoundId);
 
             if (version == null || snapshot == null) {
-                missingA.add("\"" + id + "_painting" + "\": \"\",");
+                missingA.add("\"" + compoundId + "\": \"\",");
             }
         }
 
