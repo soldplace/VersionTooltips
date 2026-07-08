@@ -28,13 +28,15 @@ import org.lwjgl.glfw.GLFW;
 public class VersionTooltipsNeoForge {
     private static VersionTooltipsConfig config;
 
-    public VersionTooltipsNeoForge(IEventBus modEventBus, ModContainer modContainer) {
+    public VersionTooltipsNeoForge(IEventBus modEventBus, ModContainer modContainer)
+    {   CommonClient.init();
         if (FMLEnvironment.getDist().isClient()) {
             ClientSetup.registerConfigScreen(modContainer);
         }
-        CommonClient.init();
+
         modEventBus.addListener((FMLClientSetupEvent event) -> clientSetup());
     }
+
 
     private static class ClientSetup {
         private static void registerConfigScreen(ModContainer modContainer) {
@@ -51,7 +53,6 @@ public class VersionTooltipsNeoForge {
         NeoForge.EVENT_BUS.addListener(this::onTooltip);
         NeoForge.EVENT_BUS.addListener(this::onPlayerJoin);
         NeoForge.EVENT_BUS.addListener(this::registerClientCommands);
-        NeoForge.EVENT_BUS.addListener(this::registerKeyMappings);
     }
 
 
@@ -59,15 +60,6 @@ public class VersionTooltipsNeoForge {
         ModCommandsNeoForge.register(event.getDispatcher());
     }
 
-    private void registerKeyMappings(RegisterKeyMappingsEvent event) {
-        CommonClient.SHOW_KEY = new KeyMapping(
-                "key.versiontooltips.show",
-                InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_LEFT_SHIFT,
-                new KeyMapping.Category(Identifier.fromNamespaceAndPath("versiontooltips", "main"))
-        );
-        event.register(CommonClient.SHOW_KEY);
-    }
 
     private void onPlayerJoin(ClientPlayerNetworkEvent.LoggingIn event) {
         if (Minecraft.getInstance().getConnection() != null) {
@@ -81,7 +73,10 @@ public class VersionTooltipsNeoForge {
         if (config == null) return;
         if (!config.modActive) return;
         if (config.onlyShowWithAdvancedTooltips && !Minecraft.getInstance().options.advancedItemTooltips) return;
-        if (config.requireKeybind && CommonClient.SHOW_KEY != null && !CommonClient.SHOW_KEY.isDown()) return;
+        if (config.requireKeybind && CommonClient.SHOW_KEY != null) {
+            int boundKeyCode = CommonClient.SHOW_KEY.getKey().getValue();
+            if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), boundKeyCode)) return;
+        }
 
         var id = ItemVersionLoader.getEffectiveId(event.getItemStack());
         if (id == null) return;

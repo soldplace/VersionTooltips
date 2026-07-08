@@ -28,5 +28,12 @@ public class CommonClient {
                 GLFW.GLFW_KEY_LEFT_SHIFT,
                 new KeyMapping.Category(Identifier.fromNamespaceAndPath("versiontooltips", "main"))
         );
+
+        KeyMappingRegistry.register(SHOW_KEY);
+        ReloadListenerRegistry.register(
+                PackType.CLIENT_RESOURCES,
+                new ItemVersionLoader(),
+                Identifier.fromNamespaceAndPath("versiontooltips", "item_versions")
+        );
     }
 }
