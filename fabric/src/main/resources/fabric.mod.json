@@ -26,11 +26,10 @@
 		"fabricloader": ">=0.19.3",
 		"minecraft": "1.21.11",
 		"java": ">=21",
-		"fabric-api": ">=0.139.4+1.21.11"
+		"fabric-api": ">=0.139.4+1.21.11",
+		"clothconfig2": ">=21.11.150+fabric"
 	},
 	"suggests": {
-		"cloth_config": ">=21.11.150+fabric",
 		"modmenu": "*"
-
 	}
 }
