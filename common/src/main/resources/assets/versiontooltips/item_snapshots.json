@@ -761,5 +761,64 @@
   "minecraft:density": "24w13a",
   "minecraft:wind_burst": "24w13a",
 
-  "minecraft:lunge": "25w41a"
+  "minecraft:lunge": "25w41a",
+
+  
+  "minecraft:alban_painting": "Indev 20100223",
+  "minecraft:aztec_painting": "Indev 20100223",
+  "minecraft:aztec2_painting": "Indev 20100223",
+  "minecraft:bomb_painting": "Indev 20100223",
+  "minecraft:kebab_painting": "Indev 20100223",
+  "minecraft:plant_painting": "Indev 20100223",
+  "minecraft:wasteland_painting": "Indev 20100223",
+  "minecraft:wanderer_painting": "Indev 20100223",
+  "minecraft:courbet_painting": "Indev 20100223",
+  "minecraft:fighters_painting": "Indev 20100223",
+  "minecraft:pool_painting": "Indev 20100223",
+  "minecraft:sea_painting": "Indev 20100223",
+  "minecraft:sunset_painting": "Indev 20100223",
+  "minecraft:bust_painting": "Indev 20100223",
+  "minecraft:match_painting": "Indev 20100223",
+  "minecraft:pointer_painting": "Indev 20100223",
+  "minecraft:skull_and_roses_painting": "Indev 20100223",
+  "minecraft:stage_painting": "Indev 20100223",
+  "minecraft:void_painting": "Indev 20100223",
+
+  "minecraft:graham_painting": "Alpha v1.1.1",
+  "minecraft:creebet_painting": "Alpha v1.1.1",
+  "minecraft:donkey_kong_painting": "Alpha v1.1.1",
+  "minecraft:skeleton_painting": "Alpha v1.1.1",
+  "minecraft:pigscene_painting": "Alpha v1.1.1",
+
+  "minecraft:burning_skull_painting": "Beta 1.3",
+
+  "minecraft:wither_painting": "12w36a",
+
+  "minecraft:water_painting": "22w16a",
+  "minecraft:fire_painting": "22w16a",
+  "minecraft:wind_painting": "22w16a",
+  "minecraft:earth_painting": "22w16a",
+
+  "minecraft:meditative_painting": "24w18a",
+  "minecraft:prairie_ride_painting": "24w18a",
+  "minecraft:baroque_painting": "24w18a",
+  "minecraft:humble_painting": "24w18a",
+  "minecraft:unpacked_painting": "24w18a",
+  "minecraft:bouquet_painting": "24w18a",
+  "minecraft:cavebird_painting": "24w18a",
+  "minecraft:cotan_painting": "24w18a",
+  "minecraft:endboss_painting": "24w18a",
+  "minecraft:fern_painting": "24w18a",
+  "minecraft:owlemons_painting": "24w18a",
+  "minecraft:sunflowers_painting": "24w18a",
+  "minecraft:tides_painting": "24w18a",
+  "minecraft:backyard_painting": "24w18a",
+  "minecraft:pond_painting": "24w18a",
+  "minecraft:changing_painting": "24w18a",
+  "minecraft:finding_painting": "24w18a",
+  "minecraft:lowmist_painting": "24w18a",
+  "minecraft:passage_painting": "24w18a",
+  "minecraft:orb_painting": "24w18a",
+
+  "minecraft:dennis_painting": "1.21.7 Release Candidate 1"
 }

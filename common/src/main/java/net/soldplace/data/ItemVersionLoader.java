@@ -48,7 +48,6 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
             var first = storedEnchants.entrySet().iterator().next().getKey();
             var key = first.unwrapKey();
             if (key.isPresent()) {
-                System.out.println(key.get().identifier());
                 return key.get().identifier();
             }
         }
@@ -57,8 +56,7 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
         if (paintings != null) {
             var key = paintings.unwrapKey();
             if (key.isPresent()) {
-                System.out.println(key.get().identifier());
-                return key.get().identifier();
+                return key.get().identifier().withSuffix("_painting");
             }
         }
 
@@ -135,7 +133,7 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
             }
 
             if (version == null || snapshot == null) {
-                missingItems.add(id.toString());
+                missingItems.add("\"" + id + "\": \"\",");
             }
         }
         // Potions logic
@@ -146,7 +144,7 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
                 String version = ITEM_VERSIONS_VERSION.get(compoundId);
                 String snapshot = ITEM_VERSIONS_SNAPSHOT.get(compoundId);
                 if (version == null || snapshot == null) {
-                    missingPotions.add(compoundId.toString());
+                    missingPotions.add("\"" + compoundId + "\": \"\",");
                 }
             }
         }
@@ -175,7 +173,7 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
             String snapshot = ITEM_VERSIONS_SNAPSHOT.get(id);
 
             if (version == null || snapshot == null) {
-                missing.add(id.toString());
+                missing.add("\"" + id + "\": \"\",");
             }
         }
 
@@ -188,15 +186,15 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
     }
 
     public static void reportMissingPaintings(net.minecraft.core.RegistryAccess registryManager) {
-        var enchantmentRegistry = registryManager.lookupOrThrow(Registries.PAINTING_VARIANT);
+        var paintingRegistry = registryManager.lookupOrThrow(Registries.PAINTING_VARIANT);
         List<String> missingA = new ArrayList<>();
 
-        for (Identifier id : enchantmentRegistry.keySet()) {
+        for (Identifier id : paintingRegistry.keySet()) {
             String version = ITEM_VERSIONS_VERSION.get(id);
             String snapshot = ITEM_VERSIONS_SNAPSHOT.get(id);
 
             if (version == null || snapshot == null) {
-                missingA.add(id.toString());
+                missingA.add("\"" + id + "_painting" + "\": \"\",");
             }
         }
 

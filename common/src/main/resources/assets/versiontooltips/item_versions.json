@@ -762,6 +762,65 @@
   "minecraft:density": "1.21",
   "minecraft:wind_burst": "1.21",
 
-  "minecraft:lunge": "1.21.11"
+  "minecraft:lunge": "1.21.11",
 
+
+
+  "minecraft:alban_painting": "Indev",
+  "minecraft:aztec_painting": "Indev",
+  "minecraft:aztec2_painting": "Indev",
+  "minecraft:bomb_painting": "Indev",
+  "minecraft:kebab_painting": "Indev",
+  "minecraft:plant_painting": "Indev",
+  "minecraft:wasteland_painting": "Indev",
+  "minecraft:wanderer_painting": "Indev",
+  "minecraft:courbet_painting": "Indev",
+  "minecraft:fighters_painting": "Indev",
+  "minecraft:pool_painting": "Indev",
+  "minecraft:sea_painting": "Indev",
+  "minecraft:sunset_painting": "Indev",
+  "minecraft:bust_painting": "Indev",
+  "minecraft:match_painting": "Indev",
+  "minecraft:pointer_painting": "Indev",
+  "minecraft:skull_and_roses_painting": "Indev",
+  "minecraft:stage_painting": "Indev",
+  "minecraft:void_painting": "Indev",
+
+  "minecraft:graham_painting": "Alpha v1.1.1",
+  "minecraft:creebet_painting": "Alpha v1.1.1",
+  "minecraft:donkey_kong_painting": "Alpha v1.1.1",
+  "minecraft:skeleton_painting": "Alpha v1.1.1",
+  "minecraft:pigscene_painting": "Alpha v1.1.1",
+
+  "minecraft:burning_skull_painting": "Beta 1.3",
+
+  "minecraft:wither_painting": "1.4.2",
+
+  "minecraft:water_painting": "1.19",
+  "minecraft:fire_painting": "1.19",
+  "minecraft:wind_painting": "1.19",
+  "minecraft:earth_painting": "1.19",
+
+  "minecraft:meditative_painting": "1.21",
+  "minecraft:prairie_ride_painting": "1.21",
+  "minecraft:baroque_painting": "1.21",
+  "minecraft:humble_painting": "1.21",
+  "minecraft:unpacked_painting": "1.21",
+  "minecraft:bouquet_painting": "1.21",
+  "minecraft:cavebird_painting": "1.21",
+  "minecraft:cotan_painting": "1.21",
+  "minecraft:endboss_painting": "1.21",
+  "minecraft:fern_painting": "1.21",
+  "minecraft:owlemons_painting": "1.21",
+  "minecraft:sunflowers_painting": "1.21",
+  "minecraft:tides_painting": "1.21",
+  "minecraft:backyard_painting": "1.21",
+  "minecraft:pond_painting": "1.21",
+  "minecraft:changing_painting": "1.21",
+  "minecraft:finding_painting": "1.21",
+  "minecraft:lowmist_painting": "1.21",
+  "minecraft:passage_painting": "1.21",
+  "minecraft:orb_painting": "1.21",
+
+  "minecraft:dennis_painting": "1.21.7"
 }
