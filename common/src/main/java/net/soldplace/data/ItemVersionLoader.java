@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.resources.Identifier;
+import net.soldplace.nicolesrt;
 
 
 import java.io.InputStreamReader;
@@ -126,12 +127,11 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
             if (version == null) {
                 version = ITEM_VERSIONS_VERSION.get(id);
             }
-
             String snapshot = BLOCK_VERSIONS_SNAPSHOT.get(id);
             if (snapshot == null) {
                 snapshot = ITEM_VERSIONS_SNAPSHOT.get(id);
             }
-
+            if (!nicolesrt.debug) return;
             if (version == null || snapshot == null) {
                 missingItems.add("\"" + id + "\": \"\",");
             }
@@ -143,12 +143,12 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
                 Identifier compoundId = Identifier.fromNamespaceAndPath(id.getNamespace(), id.getPath() + suffix);
                 String version = ITEM_VERSIONS_VERSION.get(compoundId);
                 String snapshot = ITEM_VERSIONS_SNAPSHOT.get(compoundId);
+                if (!nicolesrt.debug) return;
                 if (version == null || snapshot == null) {
                     missingPotions.add("\"" + compoundId + "\": \"\",");
                 }
             }
         }
-
         if (missingItems.isEmpty() && missingPotions.isEmpty()) {
             System.out.println("[VersionTooltips] No missing entries - every item has version data.");
             return;
@@ -171,7 +171,7 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
         for (Identifier id : enchantmentRegistry.keySet()) {
             String version = ITEM_VERSIONS_VERSION.get(id);
             String snapshot = ITEM_VERSIONS_SNAPSHOT.get(id);
-
+            if (!nicolesrt.debug) return;
             if (version == null || snapshot == null) {
                 missing.add("\"" + id + "\": \"\",");
             }
@@ -193,7 +193,7 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
             Identifier compoundId = Identifier.parse(id + "_painting");
             String version = ITEM_VERSIONS_VERSION.get(compoundId);
             String snapshot = ITEM_VERSIONS_SNAPSHOT.get(compoundId);
-
+            if (!nicolesrt.debug) return;
             if (version == null || snapshot == null) {
                 missingA.add("\"" + compoundId + "\": \"\",");
             }

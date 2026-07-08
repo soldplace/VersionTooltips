@@ -5,7 +5,6 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.clothconfig2.gui.entries.SelectionListEntry;
 
-
 @Config(name = "versiontooltips")
 public class VersionTooltipsConfig implements ConfigData {
     public boolean modActive = true;
