@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
@@ -46,6 +47,15 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
         if (storedEnchants != null && !storedEnchants.isEmpty()) {
             var first = storedEnchants.entrySet().iterator().next().getKey();
             var key = first.unwrapKey();
+            if (key.isPresent()) {
+                System.out.println(key.get().identifier());
+                return key.get().identifier();
+            }
+        }
+
+        var paintings = stack.get(DataComponents.PAINTING_VARIANT);
+        if (paintings != null) {
+            var key = paintings.unwrapKey();
             if (key.isPresent()) {
                 System.out.println(key.get().identifier());
                 return key.get().identifier();
@@ -175,6 +185,27 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
         }
 
         System.out.println("[VersionTooltips] " + missing.size() + " enchantment(s) missing version data:\n" + String.join("\n", missing));
+    }
+
+    public static void reportMissingPaintings(net.minecraft.core.RegistryAccess registryManager) {
+        var enchantmentRegistry = registryManager.lookupOrThrow(Registries.PAINTING_VARIANT);
+        List<String> missingA = new ArrayList<>();
+
+        for (Identifier id : enchantmentRegistry.keySet()) {
+            String version = ITEM_VERSIONS_VERSION.get(id);
+            String snapshot = ITEM_VERSIONS_SNAPSHOT.get(id);
+
+            if (version == null || snapshot == null) {
+                missingA.add(id.toString());
+            }
+        }
+
+        if (missingA.isEmpty()) {
+            System.out.println("[VersionTooltips] No missing painting variants - every painting variant has version data.");
+            return;
+        }
+
+        System.out.println("[VersionTooltips] " + missingA.size() + " painting variant(s) missing version data:\n" + String.join("\n", missingA));
     }
 
 

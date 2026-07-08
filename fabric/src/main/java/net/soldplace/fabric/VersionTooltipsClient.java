@@ -33,6 +33,7 @@ public class VersionTooltipsClient implements ClientModInitializer {
 
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
 			ItemVersionLoader.reportMissingEnchantments(handler.registryAccess());
+			ItemVersionLoader.reportMissingPaintings(handler.registryAccess());
 		});
 
 		SHOW_KEY = KeyBindingHelper.registerKeyBinding(new KeyMapping(
