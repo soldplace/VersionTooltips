@@ -1,0 +1,42 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="CC-NC-4.0"
+issueTrackerURL="https://github.com/nicolesrt/VersionTooltips"
+
+[[mods]]
+modId="versiontooltips"
+version="${version}"
+displayName="Version Tooltips"
+description='''
+        This mod adds a simple toggleable tooltip that shows in what version an item was added to the game.
+    '''
+authors="soldplace, Nicole.srt"
+logoFile="VersionTooltipsIcon128x128.png"
+
+[[dependencies.versiontooltips]]
+modId="neoforge"
+type="required"
+versionRange="[21.11,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.versiontooltips]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.11]"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.versiontooltips]]
+modId="cloth_config"
+type="required"
+versionRange="[21.11.150,)"
+ordering="BEFORE"
+side="BOTH"
+
+[[dependencies.versiontooltips]]
+modId="architectury"
+type="required"
+versionRange="[19.0.1,)"
+ordering="BEFORE"
+side="BOTH"

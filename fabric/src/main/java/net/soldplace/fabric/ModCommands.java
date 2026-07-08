@@ -5,8 +5,8 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.minecraft.command.CommandSource;
-import net.minecraft.text.Text;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
 import net.soldplace.config.VersionTooltipsConfig;
 
 import java.util.Arrays;
@@ -20,7 +20,7 @@ public class ModCommands {
                             .executes(ctx -> {
 
                                 var config = AutoConfig.getConfigHolder(VersionTooltipsConfig.class).getConfig();
-                                ctx.getSource().sendFeedback(Text.literal(
+                                ctx.getSource().sendFeedback(Component.literal(
                                         "Current Version Tooltips config:\n" +
                                                 "  §aactive:§r           " + config.modActive + "\n" +
                                                 "  §atype:§r             " + config.type.name() + "\n" +
@@ -36,7 +36,7 @@ public class ModCommands {
                                             .executes(ctx -> {
                                                 boolean value = BoolArgumentType.getBool(ctx, "value");
                                                 setConfig(config -> config.modActive = value);
-                                                ctx.getSource().sendFeedback(Text.literal(
+                                                ctx.getSource().sendFeedback(Component.literal(
                                                         "§a[VersionTooltips]§r active set to " + value
                                                 ));
                                                 return 1;
@@ -46,7 +46,7 @@ public class ModCommands {
 
                             .then(ClientCommandManager.literal("type")
                                     .then(ClientCommandManager.argument("value", StringArgumentType.word())
-                                            .suggests((ctx, builder) -> CommandSource.suggestMatching(
+                                            .suggests((ctx, builder) -> SharedSuggestionProvider.suggest(
                                                     Arrays.stream(VersionTooltipsConfig.TooltipType.values())
                                                             .map(Enum::name),
                                                     builder
@@ -56,11 +56,11 @@ public class ModCommands {
                                                 try {
                                                     var parsed = VersionTooltipsConfig.TooltipType.valueOf(value);
                                                     setConfig(config -> config.type = parsed);
-                                                    ctx.getSource().sendFeedback(Text.literal(
+                                                    ctx.getSource().sendFeedback(Component.literal(
                                                             "§a[VersionTooltips]§r type set to " + parsed.name()
                                                     ));
                                                 } catch (IllegalArgumentException e) {
-                                                    ctx.getSource().sendFeedback(Text.literal(
+                                                    ctx.getSource().sendFeedback(Component.literal(
                                                             "§a[VersionTooltips]§r Unknown type '" + value + "'. Options: " +
                                                                     Arrays.stream(VersionTooltipsConfig.TooltipType.values())
                                                                             .map(Enum::name)
@@ -74,7 +74,7 @@ public class ModCommands {
 
                             .then(ClientCommandManager.literal("style")
                                     .then(ClientCommandManager.argument("value", StringArgumentType.word())
-                                            .suggests((ctx, builder) -> CommandSource.suggestMatching(
+                                            .suggests((ctx, builder) -> SharedSuggestionProvider.suggest(
                                                     Arrays.stream(VersionTooltipsConfig.TooltipStyle.values())
                                                             .map(Enum::name),
                                                     builder
@@ -84,11 +84,11 @@ public class ModCommands {
                                                 try {
                                                     var parsed = VersionTooltipsConfig.TooltipStyle.valueOf(value);
                                                     setConfig(config -> config.style = parsed);
-                                                    ctx.getSource().sendFeedback(Text.literal(
+                                                    ctx.getSource().sendFeedback(Component.literal(
                                                             "§a[VersionTooltips]§r style set to " + parsed.name()
                                                     ));
                                                 } catch (IllegalArgumentException e) {
-                                                    ctx.getSource().sendFeedback(Text.literal(
+                                                    ctx.getSource().sendFeedback(Component.literal(
                                                             "§a[VersionTooltips]§r Unknown style '" + value + "'. Options: Vanilla, Modded"
                                                     ));
                                                 }
@@ -102,7 +102,7 @@ public class ModCommands {
                                             .executes(ctx -> {
                                                 boolean value = BoolArgumentType.getBool(ctx, "value");
                                                 setConfig(config -> config.requireKeybind = value);
-                                                ctx.getSource().sendFeedback(Text.literal(
+                                                ctx.getSource().sendFeedback(Component.literal(
                                                         "§a[VersionTooltips]§r keybind set to " + value
                                                 ));
                                                 return 1;
@@ -110,12 +110,12 @@ public class ModCommands {
                                     )
                             )
 
-                            .then(ClientCommandManager.literal("advancedonly")
+                            .then(ClientCommandManager.literal("advancedtooltips")
                                     .then(ClientCommandManager.argument("value", BoolArgumentType.bool())
                                             .executes(ctx -> {
                                                 boolean value = BoolArgumentType.getBool(ctx, "value");
                                                 setConfig(config -> config.onlyShowWithAdvancedTooltips = value);
-                                                ctx.getSource().sendFeedback(Text.literal(
+                                                ctx.getSource().sendFeedback(Component.literal(
                                                         "§a[VersionTooltips]§r advancedonly set to " + value
                                                 ));
                                                 return 1;
