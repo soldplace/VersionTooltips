@@ -47,6 +47,7 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
             var first = storedEnchants.entrySet().iterator().next().getKey();
             var key = first.unwrapKey();
             if (key.isPresent()) {
+                System.out.println(key.get().identifier());
                 return key.get().identifier();
             }
         }
