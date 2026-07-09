@@ -2,7 +2,7 @@ package net.soldplace.fabric;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.client.Minecraft;
@@ -29,14 +29,14 @@ public class VersionTooltipsClient implements ClientModInitializer {
 		AutoConfig.register(VersionTooltipsConfig.class, GsonConfigSerializer::new);
 		ModCommands.register();
 		ResourceLoader.get(PackType.CLIENT_RESOURCES)
-				.registerReloader(Identifier.fromNamespaceAndPath("versiontooltips", "item_versions"), new ItemVersionLoader());
+				.registerReloadListener(Identifier.fromNamespaceAndPath("versiontooltips", "item_versions"), new ItemVersionLoader());
 
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
 			ItemVersionLoader.reportMissingEnchantments(handler.registryAccess());
 			ItemVersionLoader.reportMissingPaintings(handler.registryAccess());
 		});
 
-		SHOW_KEY = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+		SHOW_KEY = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 				"key.versiontooltips.show", // Translation key for the name
 				InputConstants.Type.KEYSYM,
 				GLFW.GLFW_KEY_LEFT_SHIFT,
@@ -57,7 +57,7 @@ public class VersionTooltipsClient implements ClientModInitializer {
 			}
 
 			if (config.requireKeybind) {
-				int boundKeyCode = KeyBindingHelper.getBoundKeyOf(SHOW_KEY).getValue();
+				int boundKeyCode = KeyMappingHelper.getBoundKeyOf(SHOW_KEY).getValue();
 				if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), boundKeyCode)) {
 					return;
 				}

@@ -56,3 +56,7 @@ shadowJar {
     archiveClassifier = null           // shadowJar becomes the main artifact
     from rootProject.file("LICENSE.md")
 }
+
+tasks.named("assemble") {
+    dependsOn(tasks.named("shadowJar"))
+}
