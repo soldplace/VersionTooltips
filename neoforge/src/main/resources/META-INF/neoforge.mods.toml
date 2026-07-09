@@ -23,7 +23,7 @@ side="BOTH"
 [[dependencies.versiontooltips]]
 modId="neoforge"
 type="required"
-versionRange="[26.1.0.0-alpha.9+snapshot-6,)"
+versionRange="[26.1.0.0-alpha.1+snapshot-1,)"
 ordering="NONE"
 side="BOTH"
 
@@ -38,6 +38,6 @@ side="BOTH"
 [[dependencies.versiontooltips]]
 modId="architectury"
 type="required"
-versionRange="[20.0.4,)"
+versionRange="[20.0.2,)"
 ordering="BEFORE"
 side="BOTH"
