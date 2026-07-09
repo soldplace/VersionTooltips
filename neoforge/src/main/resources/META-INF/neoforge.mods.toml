@@ -14,29 +14,30 @@ authors="soldplace, Nicole.srt"
 logoFile="VersionTooltipsIcon128x128.png"
 
 [[dependencies.versiontooltips]]
-modId="neoforge"
+modId="minecraft"
 type="required"
-versionRange="[21.11,)"
+versionRange="[26.1]"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.versiontooltips]]
-modId="minecraft"
+modId="neoforge"
 type="required"
-versionRange="[1.21.11]"
+versionRange="[26.1.0.0-alpha.9+snapshot-6,)"
 ordering="NONE"
 side="BOTH"
+
 
 [[dependencies.versiontooltips]]
 modId="cloth_config"
 type="required"
-versionRange="[21.11.150,)"
+versionRange="[26.1.154,)"
 ordering="BEFORE"
 side="BOTH"
 
 [[dependencies.versiontooltips]]
 modId="architectury"
 type="required"
-versionRange="[19.0.1,)"
+versionRange="[20.0.4,)"
 ordering="BEFORE"
 side="BOTH"
