@@ -1,14 +1,9 @@
 package net.soldplace.neoforge;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.soldplace.client.CommonClient;
 import net.soldplace.config.VersionTooltipsConfig;
 import net.soldplace.data.ItemVersionLoader;
-import me.shedaniel.autoconfig.AutoConfigClient;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -23,7 +18,6 @@ import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
-import org.lwjgl.glfw.GLFW;
 
 @Mod("versiontooltips")
 public class VersionTooltipsNeoForge {
@@ -31,7 +25,7 @@ public class VersionTooltipsNeoForge {
 
     public VersionTooltipsNeoForge(IEventBus modEventBus, ModContainer modContainer)
     {   CommonClient.init();
-        if (FMLEnvironment.getDist().isClient()) {
+        if (FMLEnvironment.dist.isClient()) {
             ClientSetup.registerConfigScreen(modContainer);
         }
 
@@ -43,7 +37,7 @@ public class VersionTooltipsNeoForge {
         private static void registerConfigScreen(ModContainer modContainer) {
             modContainer.registerExtensionPoint(
                     IConfigScreenFactory.class,
-                    (mc, parent) -> AutoConfigClient.getConfigScreen(VersionTooltipsConfig.class, parent).get()
+                    (mc, parent) -> AutoConfig.getConfigScreen(VersionTooltipsConfig.class, parent).get()
             );
         }
     }
@@ -65,7 +59,6 @@ public class VersionTooltipsNeoForge {
     private void onPlayerJoin(ClientPlayerNetworkEvent.LoggingIn event) {
         if (Minecraft.getInstance().getConnection() != null) {
             ItemVersionLoader.reportMissingEnchantments(Minecraft.getInstance().getConnection().registryAccess());
-            ItemVersionLoader.reportMissingPaintings(Minecraft.getInstance().getConnection().registryAccess());
         }
     }
 
@@ -75,7 +68,7 @@ public class VersionTooltipsNeoForge {
         if (config.onlyShowWithAdvancedTooltips && !Minecraft.getInstance().options.advancedItemTooltips) return;
         if (config.requireKeybind && CommonClient.SHOW_KEY != null) {
             int boundKeyCode = CommonClient.SHOW_KEY.getKey().getValue();
-            if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), boundKeyCode)) return;
+            if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), boundKeyCode)) return;
         }
 
         var id = ItemVersionLoader.getEffectiveId(event.getItemStack());

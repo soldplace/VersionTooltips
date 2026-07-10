@@ -53,14 +53,6 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
             }
         }
 
-        var paintings = stack.get(DataComponents.PAINTING_VARIANT);
-        if (paintings != null) {
-            var key = paintings.unwrapKey();
-            if (key.isPresent()) {
-                return key.get().location().withSuffix("_painting");
-            }
-        }
-
         return BuiltInRegistries.ITEM.getKey(stack.getItem());
     }
 
@@ -153,60 +145,32 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
             System.out.println("[VersionTooltips] No missing entries - every item has version data.");
             return;
         }
-
         if (!missingItems.isEmpty()) {
             System.out.println("[VersionTooltips] " + missingItems.size() + " item(s) missing version data:\n" + String.join("\n", missingItems));
         }
-
         if (!missingPotions.isEmpty()) {
             System.out.println("[VersionTooltips] " + missingPotions.size() + " potion(s) missing version data:\n" + String.join("\n", missingPotions));
         }
-
-
     }
     public static void reportMissingEnchantments(net.minecraft.core.RegistryAccess registryManager) {
         var enchantmentRegistry = registryManager.lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT);
         List<String> missing = new ArrayList<>();
 
-        for (ResourceLocation id : enchantmentRegistry.keySet()) {
+        enchantmentRegistry.listElements().forEach(holder -> {
+            ResourceLocation id = holder.key().location();
             String version = ITEM_VERSIONS_VERSION.get(id);
             String snapshot = ITEM_VERSIONS_SNAPSHOT.get(id);
             if (!nicolesrt.debug) return;
             if (version == null || snapshot == null) {
                 missing.add("\"" + id + "\": \"\",");
             }
-        }
-
+        });
         if (missing.isEmpty()) {
             System.out.println("[VersionTooltips] No missing enchantments - every enchantment has version data.");
             return;
         }
-
         System.out.println("[VersionTooltips] " + missing.size() + " enchantment(s) missing version data:\n" + String.join("\n", missing));
     }
-
-    public static void reportMissingPaintings(net.minecraft.core.RegistryAccess registryManager) {
-        var paintingRegistry = registryManager.lookupOrThrow(Registries.PAINTING_VARIANT);
-        List<String> missingA = new ArrayList<>();
-
-        for (ResourceLocation id : paintingRegistry.keySet()) {
-            ResourceLocation compoundId = ResourceLocation.parse(id + "_painting");
-            String version = ITEM_VERSIONS_VERSION.get(compoundId);
-            String snapshot = ITEM_VERSIONS_SNAPSHOT.get(compoundId);
-            if (!nicolesrt.debug) return;
-            if (version == null || snapshot == null) {
-                missingA.add("\"" + compoundId + "\": \"\",");
-            }
-        }
-
-        if (missingA.isEmpty()) {
-            System.out.println("[VersionTooltips] No missing painting variants - every painting variant has version data.");
-            return;
-        }
-
-        System.out.println("[VersionTooltips] " + missingA.size() + " painting variant(s) missing version data:\n" + String.join("\n", missingA));
-    }
-
 
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {

@@ -9,7 +9,8 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 
 import net.minecraft.client.KeyMapping;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.KeyboardHandler;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 
 import net.soldplace.config.VersionTooltipsConfig;
@@ -26,14 +27,14 @@ public class CommonClient {
                 "key.versiontooltips.show",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_LEFT_SHIFT,
-                new KeyMapping.Category(Identifier.fromNamespaceAndPath("versiontooltips", "main"))
+                "key.category.versiontooltips"
         );
 
         KeyMappingRegistry.register(SHOW_KEY);
         ReloadListenerRegistry.register(
                 PackType.CLIENT_RESOURCES,
                 new ItemVersionLoader(),
-                Identifier.fromNamespaceAndPath("versiontooltips", "item_versions")
+                ResourceLocation.fromNamespaceAndPath("versiontooltips", "item_versions")
         );
     }
 }
