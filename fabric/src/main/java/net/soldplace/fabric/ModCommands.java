@@ -85,7 +85,7 @@ public class ModCommands {
                                                     var parsed = VersionTooltipsConfig.TooltipStyle.valueOf(value);
                                                     setConfig(config -> config.style = parsed);
                                                     ctx.getSource().sendFeedback(Component.literal(
-                                                            "§a[VersionTooltips]§r style set to " + parsed
+                                                            "§a[VersionTooltips]§r style set to " + parsed.name()
                                                     ));
                                                 } catch (IllegalArgumentException e) {
                                                     ctx.getSource().sendFeedback(Component.literal(
