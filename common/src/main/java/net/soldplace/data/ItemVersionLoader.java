@@ -8,7 +8,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.soldplace.nicolesrt;
 
 
@@ -21,26 +21,26 @@ import java.util.Map;
 
 public class ItemVersionLoader implements ResourceManagerReloadListener {
 
-    public static Map<Identifier, String> BLOCK_VERSIONS_SNAPSHOT = new HashMap<>();
-    public static Map<Identifier, String> ITEM_VERSIONS_SNAPSHOT = new HashMap<>();
-    public static Map<Identifier, String> BLOCK_VERSIONS_VERSION = new HashMap<>();
-    public static Map<Identifier, String> ITEM_VERSIONS_VERSION = new HashMap<>();
+    public static Map<ResourceLocation, String> BLOCK_VERSIONS_SNAPSHOT = new HashMap<>();
+    public static Map<ResourceLocation, String> ITEM_VERSIONS_SNAPSHOT = new HashMap<>();
+    public static Map<ResourceLocation, String> BLOCK_VERSIONS_VERSION = new HashMap<>();
+    public static Map<ResourceLocation, String> ITEM_VERSIONS_VERSION = new HashMap<>();
     private static final Gson GSON = new Gson();
     private static final Type TYPE = new TypeToken<Map<String, String>>(){}.getType();
 
-    public static Identifier getEffectiveId(ItemStack stack) {
+    public static ResourceLocation getEffectiveId(ItemStack stack) {
         var potionContents = stack.get(DataComponents.POTION_CONTENTS);
         if (potionContents != null && potionContents.potion().isPresent()) {
             var key = potionContents.potion().get().unwrapKey();
             if (key.isPresent()) {
-                Identifier effectId = key.get().identifier();
+                ResourceLocation effectId = key.get().location();
                 String containerSuffix = switch (BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath()) {
                     case "splash_potion"    -> "_splash";
                     case "lingering_potion" -> "_lingering";
                     case "tipped_arrow"     -> "_tipped";
                     default                 -> "_normal";
                 };
-                return Identifier.fromNamespaceAndPath(effectId.getNamespace(), effectId.getPath() + containerSuffix);
+                return ResourceLocation.fromNamespaceAndPath(effectId.getNamespace(), effectId.getPath() + containerSuffix);
             }
         }
 
@@ -49,7 +49,7 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
             var first = storedEnchants.entrySet().iterator().next().getKey();
             var key = first.unwrapKey();
             if (key.isPresent()) {
-                return key.get().identifier();
+                return key.get().location();
             }
         }
 
@@ -57,7 +57,7 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
         if (paintings != null) {
             var key = paintings.unwrapKey();
             if (key.isPresent()) {
-                return key.get().identifier().withSuffix("_painting");
+                return key.get().location().withSuffix("_painting");
             }
         }
 
@@ -70,45 +70,45 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
         BLOCK_VERSIONS_VERSION.clear();
         ITEM_VERSIONS_VERSION.clear();
 
-        manager.getResource(Identifier.fromNamespaceAndPath("versiontooltips", "block_snapshots.json"))
+        manager.getResource(ResourceLocation.fromNamespaceAndPath("versiontooltips", "block_snapshots.json"))
                 .ifPresent(resource -> {
                     try (var reader = new InputStreamReader(resource.open())) {
                         Map<String, String> raw = GSON.fromJson(reader, TYPE);
                         raw.forEach((key, value) ->
-                                BLOCK_VERSIONS_SNAPSHOT.put(Identifier.parse(key), value)
+                                BLOCK_VERSIONS_SNAPSHOT.put(ResourceLocation.parse(key), value)
                         );
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
-        manager.getResource(Identifier.fromNamespaceAndPath("versiontooltips", "item_snapshots.json"))
+        manager.getResource(ResourceLocation.fromNamespaceAndPath("versiontooltips", "item_snapshots.json"))
                 .ifPresent(resource -> {
                     try (var reader = new InputStreamReader(resource.open())) {
                         Map<String, String> raw = GSON.fromJson(reader, TYPE);
                         raw.forEach((key, value) ->
-                                ITEM_VERSIONS_SNAPSHOT.put(Identifier.parse(key), value)
+                                ITEM_VERSIONS_SNAPSHOT.put(ResourceLocation.parse(key), value)
                         );
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
-        manager.getResource(Identifier.fromNamespaceAndPath("versiontooltips", "block_versions.json"))
+        manager.getResource(ResourceLocation.fromNamespaceAndPath("versiontooltips", "block_versions.json"))
                 .ifPresent(resource -> {
                     try (var reader = new InputStreamReader(resource.open())) {
                         Map<String, String> raw = GSON.fromJson(reader, TYPE);
                         raw.forEach((key, value) ->
-                                BLOCK_VERSIONS_VERSION.put(Identifier.parse(key), value)
+                                BLOCK_VERSIONS_VERSION.put(ResourceLocation.parse(key), value)
                         );
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
-        manager.getResource(Identifier.fromNamespaceAndPath("versiontooltips", "item_versions.json"))
+        manager.getResource(ResourceLocation.fromNamespaceAndPath("versiontooltips", "item_versions.json"))
                 .ifPresent(resource -> {
                     try (var reader = new InputStreamReader(resource.open())) {
                         Map<String, String> raw = GSON.fromJson(reader, TYPE);
                         raw.forEach((key, value) ->
-                                ITEM_VERSIONS_VERSION.put(Identifier.parse(key), value)
+                                ITEM_VERSIONS_VERSION.put(ResourceLocation.parse(key), value)
                         );
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -122,7 +122,7 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
         List<String> missingItems = new ArrayList<>();
         List<String> missingPotions = new ArrayList<>();
 
-        for (Identifier id : BuiltInRegistries.ITEM.keySet()) {
+        for (ResourceLocation id : BuiltInRegistries.ITEM.keySet()) {
             String version = BLOCK_VERSIONS_VERSION.get(id);
             if (version == null) {
                 version = ITEM_VERSIONS_VERSION.get(id);
@@ -137,10 +137,10 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
             }
         }
         // Potions logic
-        for (Identifier id : BuiltInRegistries.POTION.keySet()) {
+        for (ResourceLocation id : BuiltInRegistries.POTION.keySet()) {
             if (id.getPath().equals("empty")) continue;
             for (String suffix : new String[]{"_normal", "_splash", "_lingering", "_tipped"}) {
-                Identifier compoundId = Identifier.fromNamespaceAndPath(id.getNamespace(), id.getPath() + suffix);
+                ResourceLocation compoundId = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath() + suffix);
                 String version = ITEM_VERSIONS_VERSION.get(compoundId);
                 String snapshot = ITEM_VERSIONS_SNAPSHOT.get(compoundId);
                 if (!nicolesrt.debug) return;
@@ -168,7 +168,7 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
         var enchantmentRegistry = registryManager.lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT);
         List<String> missing = new ArrayList<>();
 
-        for (Identifier id : enchantmentRegistry.keySet()) {
+        for (ResourceLocation id : enchantmentRegistry.keySet()) {
             String version = ITEM_VERSIONS_VERSION.get(id);
             String snapshot = ITEM_VERSIONS_SNAPSHOT.get(id);
             if (!nicolesrt.debug) return;
@@ -189,8 +189,8 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
         var paintingRegistry = registryManager.lookupOrThrow(Registries.PAINTING_VARIANT);
         List<String> missingA = new ArrayList<>();
 
-        for (Identifier id : paintingRegistry.keySet()) {
-            Identifier compoundId = Identifier.parse(id + "_painting");
+        for (ResourceLocation id : paintingRegistry.keySet()) {
+            ResourceLocation compoundId = ResourceLocation.parse(id + "_painting");
             String version = ITEM_VERSIONS_VERSION.get(compoundId);
             String snapshot = ITEM_VERSIONS_SNAPSHOT.get(compoundId);
             if (!nicolesrt.debug) return;
