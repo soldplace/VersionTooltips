@@ -23,21 +23,21 @@ side="BOTH"
 [[dependencies.versiontooltips]]
 modId="neoforge"
 type="required"
-versionRange="[26.1.2.76,)"
+versionRange="[26.2.0.7-beta,)"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.versiontooltips]]
 modId="architectury"
 type="required"
-versionRange="[20.0.7,)"
+versionRange="[21.0.2,)"
 ordering="BEFORE"
 side="BOTH"
 
 [[dependencies.versiontooltips]]
 modId="cloth_config"
 type="required"
-versionRange="[26.1.154,)"
+versionRange="[26.2.155,)"
 ordering="BEFORE"
 side="BOTH"
 
