@@ -23,8 +23,8 @@ public class ModCommands {
                                 ctx.getSource().sendFeedback(Component.literal(
                                         "Current Version Tooltips config:\n" +
                                                 "  §aactive:§r           " + config.modActive + "\n" +
-                                                "  §atype:§r             " + config.type.getKey() + "\n" +
-                                                "  §astyle:§r            " + config.style + "\n" +
+                                                "  §atype:§r             " + config.type.name() + "\n" +
+                                                "  §astyle:§r            " + config.style.name() + "\n" +
                                                 "  §arequirekeybind:§r " + config.requireKeybind + "\n" +
                                                 "  §aadvancedonly:§r " + config.onlyShowWithAdvancedTooltips
                                 ));
@@ -57,7 +57,7 @@ public class ModCommands {
                                                     var parsed = VersionTooltipsConfig.TooltipType.valueOf(value);
                                                     setConfig(config -> config.type = parsed);
                                                     ctx.getSource().sendFeedback(Component.literal(
-                                                            "§a[VersionTooltips]§r type set to " + parsed.getKey()
+                                                            "§a[VersionTooltips]§r type set to " + parsed.name()
                                                     ));
                                                 } catch (IllegalArgumentException e) {
                                                     ctx.getSource().sendFeedback(Component.literal(
