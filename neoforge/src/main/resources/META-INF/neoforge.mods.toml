@@ -16,7 +16,7 @@ logoFile="VersionTooltipsIcon128x128.png"
 [[dependencies.versiontooltips]]
 modId="minecraft"
 type="required"
-versionRange="[26.1.2]"
+versionRange="[26.2]"
 ordering="NONE"
 side="BOTH"
 
