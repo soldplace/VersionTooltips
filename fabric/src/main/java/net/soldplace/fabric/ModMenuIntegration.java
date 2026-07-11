@@ -2,11 +2,11 @@ package net.soldplace.config;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
-import me.shedaniel.autoconfig.AutoConfigClient;
+import me.shedaniel.autoconfig.AutoConfig;
 
 public class ModMenuIntegration implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return parent -> AutoConfigClient.getConfigScreen(VersionTooltipsConfig.class, parent).get();
+        return parent -> AutoConfig.getConfigScreen(VersionTooltipsConfig.class, parent).get();
     }
 }

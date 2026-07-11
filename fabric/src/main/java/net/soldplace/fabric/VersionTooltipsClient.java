@@ -4,14 +4,15 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.soldplace.client.CommonClient;
 import net.soldplace.config.VersionTooltipsConfig;
 import net.soldplace.data.ItemVersionLoader;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -20,28 +21,13 @@ import org.lwjgl.glfw.GLFW;
 import net.soldplace.ModCommands;
 
 public class VersionTooltipsClient implements ClientModInitializer {
-	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(
-			Identifier.fromNamespaceAndPath("versiontooltips", "main")
-	);
-	public static KeyMapping SHOW_KEY;
 	@Override
 	public void onInitializeClient() {
-		AutoConfig.register(VersionTooltipsConfig.class, GsonConfigSerializer::new);
+		CommonClient.init();
 		ModCommands.register();
-		ResourceLoader.get(PackType.CLIENT_RESOURCES)
-				.registerReloader(Identifier.fromNamespaceAndPath("versiontooltips", "item_versions"), new ItemVersionLoader());
-
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
 			ItemVersionLoader.reportMissingEnchantments(handler.registryAccess());
-			ItemVersionLoader.reportMissingPaintings(handler.registryAccess());
 		});
-
-		SHOW_KEY = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-				"key.versiontooltips.show", // Translation key for the name
-				InputConstants.Type.KEYSYM,
-				GLFW.GLFW_KEY_LEFT_SHIFT,
-				CATEGORY
-		));
 
 		ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
 			var config = AutoConfig.getConfigHolder(VersionTooltipsConfig.class).getConfig();
@@ -57,8 +43,8 @@ public class VersionTooltipsClient implements ClientModInitializer {
 			}
 
 			if (config.requireKeybind) {
-				int boundKeyCode = KeyBindingHelper.getBoundKeyOf(SHOW_KEY).getValue();
-				if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), boundKeyCode)) {
+				int boundKeyCode = KeyBindingHelper.getBoundKeyOf(CommonClient.SHOW_KEY).getValue();
+				if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), boundKeyCode)) {
 					return;
 				}
 			}

@@ -9,7 +9,6 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.KeyboardHandler;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 
