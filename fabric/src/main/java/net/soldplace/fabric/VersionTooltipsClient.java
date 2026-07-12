@@ -1,7 +1,5 @@
 package net.soldplace.fabric;
 
-import dev.architectury.registry.ReloadListenerRegistry;
-import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -35,13 +33,8 @@ public class VersionTooltipsClient implements ClientModInitializer {
 
 		AutoConfig.register(VersionTooltipsConfig.class, GsonConfigSerializer::new);
 
-		KeyMappingRegistry.register(SHOW_KEY);
-
-		ReloadListenerRegistry.register(
-				PackType.CLIENT_RESOURCES,
-				new ItemVersionLoader(),
-				ResourceLocation.fromNamespaceAndPath("versiontooltips", "item_versions")
-		);
+		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES)
+				.registerReloadListener(new FabricItemVersionLoader());
 		ModCommands.register();
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
 			ItemVersionLoader.reportMissingEnchantments(handler.registryAccess());

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
@@ -176,4 +175,5 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
     public void onResourceManagerReload(ResourceManager resourceManager) {
         reload(resourceManager);
     }
+
 }
