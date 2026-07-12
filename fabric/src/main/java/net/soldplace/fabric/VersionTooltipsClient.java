@@ -22,19 +22,21 @@ import org.lwjgl.glfw.GLFW;
 import net.soldplace.ModCommands;
 
 public class VersionTooltipsClient implements ClientModInitializer {
-	public static KeyMapping SHOW_KEY;
+	public static final KeyMapping SHOW_KEY = KeyBindingHelper.registerKeyBinding(
+			new KeyMapping(
+					"key.versiontooltips.show",
+					InputConstants.Type.KEYSYM,
+					GLFW.GLFW_KEY_LEFT_SHIFT,
+					"key.category.versiontooltips"
+			)
+	);
 	@Override
 	public void onInitializeClient() {
 
 		AutoConfig.register(VersionTooltipsConfig.class, GsonConfigSerializer::new);
-		SHOW_KEY = new KeyMapping(
-				"key.versiontooltips.show",
-				InputConstants.Type.KEYSYM,
-				GLFW.GLFW_KEY_LEFT_SHIFT,
-				"key.category.versiontooltips"
-		);
 
 		KeyMappingRegistry.register(SHOW_KEY);
+
 		ReloadListenerRegistry.register(
 				PackType.CLIENT_RESOURCES,
 				new ItemVersionLoader(),
