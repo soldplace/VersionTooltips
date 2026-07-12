@@ -1,5 +1,7 @@
 package net.soldplace.fabric;
 
+import dev.architectury.registry.ReloadListenerRegistry;
+import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -12,7 +14,6 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
 import net.minecraft.resources.ResourceLocation;
-import net.soldplace.client.CommonClient;
 import net.soldplace.config.VersionTooltipsConfig;
 import net.soldplace.data.ItemVersionLoader;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -21,9 +22,24 @@ import org.lwjgl.glfw.GLFW;
 import net.soldplace.ModCommands;
 
 public class VersionTooltipsClient implements ClientModInitializer {
+	public static KeyMapping SHOW_KEY;
 	@Override
 	public void onInitializeClient() {
-		CommonClient.init();
+
+		AutoConfig.register(VersionTooltipsConfig.class, GsonConfigSerializer::new);
+		SHOW_KEY = new KeyMapping(
+				"key.versiontooltips.show",
+				InputConstants.Type.KEYSYM,
+				GLFW.GLFW_KEY_LEFT_SHIFT,
+				"key.category.versiontooltips"
+		);
+
+		KeyMappingRegistry.register(SHOW_KEY);
+		ReloadListenerRegistry.register(
+				PackType.CLIENT_RESOURCES,
+				new ItemVersionLoader(),
+				ResourceLocation.fromNamespaceAndPath("versiontooltips", "item_versions")
+		);
 		ModCommands.register();
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
 			ItemVersionLoader.reportMissingEnchantments(handler.registryAccess());
@@ -43,7 +59,7 @@ public class VersionTooltipsClient implements ClientModInitializer {
 			}
 
 			if (config.requireKeybind) {
-				int boundKeyCode = KeyBindingHelper.getBoundKeyOf(CommonClient.SHOW_KEY).getValue();
+				int boundKeyCode = KeyBindingHelper.getBoundKeyOf(SHOW_KEY).getValue();
 				if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), boundKeyCode)) {
 					return;
 				}
