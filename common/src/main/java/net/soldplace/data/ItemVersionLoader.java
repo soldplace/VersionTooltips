@@ -106,6 +106,8 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
                     }
                 });
 
+
+
         reportMissingEntries();
     }
 
