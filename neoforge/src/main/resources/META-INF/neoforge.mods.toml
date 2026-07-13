@@ -27,7 +27,6 @@ versionRange="[21.0,)"
 ordering="NONE"
 side="BOTH"
 
-
 [[dependencies.versiontooltips]]
 modId="cloth_config"
 type="required"
