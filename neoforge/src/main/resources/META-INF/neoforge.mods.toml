@@ -27,12 +27,6 @@ versionRange="[21.0,)"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.versiontooltips]]
-modId="architectury"
-type="required"
-versionRange="[13.0.8,)"
-ordering="BEFORE"
-side="BOTH"
 
 [[dependencies.versiontooltips]]
 modId="cloth_config"

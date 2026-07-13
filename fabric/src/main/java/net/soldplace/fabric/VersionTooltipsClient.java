@@ -11,7 +11,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
-import net.minecraft.resources.ResourceLocation;
 import net.soldplace.config.VersionTooltipsConfig;
 import net.soldplace.data.ItemVersionLoader;
 import me.shedaniel.autoconfig.AutoConfig;
