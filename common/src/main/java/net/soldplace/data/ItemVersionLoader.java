@@ -52,7 +52,13 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
             }
         }
 
-        
+        var paintings = stack.get(DataComponents.PAINTING_VARIANT);
+        if (paintings != null) {
+            var key = paintings.unwrapKey();
+            if (key.isPresent()) {
+                return key.get().registry().withSuffix("_painting");
+            }
+        }
 
         return BuiltInRegistries.ITEM.getKey(stack.getItem());
     }
