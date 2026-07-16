@@ -37,6 +37,7 @@ public class VersionTooltipsClient implements ClientModInitializer {
 		ModCommands.register();
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
 			ItemVersionLoader.reportMissingEnchantments(handler.registryAccess());
+			ItemVersionLoader.reportMissingPaintings(handler.registryAccess());
 		});
 
 		ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {

@@ -80,6 +80,7 @@ public class VersionTooltipsNeoForge {
     private void onPlayerJoin(ClientPlayerNetworkEvent.LoggingIn event) {
         if (Minecraft.getInstance().getConnection() != null) {
             ItemVersionLoader.reportMissingEnchantments(Minecraft.getInstance().getConnection().registryAccess());
+            ItemVersionLoader.reportMissingPaintings(Minecraft.getInstance().getConnection().registryAccess());
         }
     }
 

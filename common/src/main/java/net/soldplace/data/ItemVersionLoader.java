@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
@@ -56,7 +57,7 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
         if (paintings != null) {
             var key = paintings.unwrapKey();
             if (key.isPresent()) {
-                return key.get().registry().withSuffix("_painting");
+                return key.get().location().withSuffix("_painting");
             }
         }
 
@@ -179,6 +180,28 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
             return;
         }
         System.out.println("[VersionTooltips] " + missing.size() + " enchantment(s) missing version data:\n" + String.join("\n", missing));
+    }
+
+    public static void reportMissingPaintings(net.minecraft.core.RegistryAccess registryManager) {
+        var paintingRegistry = registryManager.lookupOrThrow(Registries.PAINTING_VARIANT);
+        List<String> missingA = new ArrayList<>();
+
+        for (ResourceLocation id : paintingRegistry.keySet()) {
+            ResourceLocation compoundId = ResourceLocation.parse(id + "_painting");
+            String version = ITEM_VERSIONS_VERSION.get(compoundId);
+            String snapshot = ITEM_VERSIONS_SNAPSHOT.get(compoundId);
+            if (!nicolesrt.debug) return;
+            if (version == null || snapshot == null) {
+                missingA.add("\"" + compoundId + "\": \"\",");
+            }
+        }
+
+        if (missingA.isEmpty()) {
+            System.out.println("[VersionTooltips] No missing painting variants - every painting variant has version data.");
+            return;
+        }
+
+        System.out.println("[VersionTooltips] " + missingA.size() + " painting variant(s) missing version data:\n" + String.join("\n", missingA));
     }
 
     @Override
