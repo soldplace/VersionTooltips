@@ -3,6 +3,8 @@ package net.soldplace.neoforge;
 import com.mojang.blaze3d.platform.InputConstants;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.soldplace.config.VersionTooltipsConfig;
@@ -32,7 +34,7 @@ public class VersionTooltipsNeoForge {
                     "key.versiontooltips.show",
                     InputConstants.Type.KEYSYM,
                     GLFW.GLFW_KEY_LEFT_SHIFT,
-                    Category.register()
+                    "key.category.versiontooltips"
             ));
     private void registerKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(SHOW_KEY.get());
