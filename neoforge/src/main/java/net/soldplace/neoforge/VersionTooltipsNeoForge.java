@@ -32,7 +32,7 @@ public class VersionTooltipsNeoForge {
                     "key.versiontooltips.show",
                     InputConstants.Type.KEYSYM,
                     GLFW.GLFW_KEY_LEFT_SHIFT,
-                    "key.category.versiontooltips"
+                    Category.register()
             ));
     private void registerKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(SHOW_KEY.get());
