@@ -52,6 +52,8 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
             }
         }
 
+        
+
         return BuiltInRegistries.ITEM.getKey(stack.getItem());
     }
 
