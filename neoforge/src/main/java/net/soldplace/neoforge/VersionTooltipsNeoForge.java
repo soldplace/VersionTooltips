@@ -3,9 +3,8 @@ package net.soldplace.neoforge;
 import com.mojang.blaze3d.platform.InputConstants;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.soldplace.config.VersionTooltipsConfig;
 import net.soldplace.data.ItemVersionLoader;
@@ -40,8 +39,8 @@ public class VersionTooltipsNeoForge {
         event.register(SHOW_KEY.get());
     }
 
-    private void registerReloadListeners(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(new ItemVersionLoader());
+    private void registerReloadListeners(AddClientReloadListenersEvent event) {
+        event.addListener(ResourceLocation.fromNamespaceAndPath("versiontooltips", "item_versions"), new ItemVersionLoader());
     }
 
     private void registerClientCommands(RegisterClientCommandsEvent event) {
