@@ -33,10 +33,3 @@ type="required"
 versionRange="[21.11.150,)"
 ordering="BEFORE"
 side="BOTH"
-
-[[dependencies.versiontooltips]]
-modId="architectury"
-type="required"
-versionRange="[19.0.1,)"
-ordering="BEFORE"
-side="BOTH"
