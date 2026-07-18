@@ -28,13 +28,6 @@ ordering="NONE"
 side="BOTH"
 
 [[dependencies.versiontooltips]]
-modId="architectury"
-type="required"
-versionRange="[20.0.7,)"
-ordering="BEFORE"
-side="BOTH"
-
-[[dependencies.versiontooltips]]
 modId="cloth_config"
 type="required"
 versionRange="[26.1.154,)"
