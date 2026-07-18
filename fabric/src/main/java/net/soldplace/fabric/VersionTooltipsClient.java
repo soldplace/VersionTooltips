@@ -4,7 +4,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -33,11 +33,9 @@ public class VersionTooltipsClient implements ClientModInitializer {
 	);
 	@Override
 	public void onInitializeClient() {
-
 		AutoConfig.register(VersionTooltipsConfig.class, GsonConfigSerializer::new);
-
-		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES)
-				.registerReloadListener(new FabricItemVersionLoader());
+		ResourceLoader.get(PackType.CLIENT_RESOURCES)
+				.registerReloader(ResourceLocation.fromNamespaceAndPath("versiontooltips", "item_versions"), new ItemVersionLoader());
 		ModCommands.register();
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
 			ItemVersionLoader.reportMissingEnchantments(handler.registryAccess());
