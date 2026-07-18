@@ -1,15 +1,15 @@
 package net.soldplace.neoforge;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.soldplace.client.CommonClient;
 import net.soldplace.config.VersionTooltipsConfig;
 import net.soldplace.data.ItemVersionLoader;
-import me.shedaniel.autoconfig.AutoConfigClient;
 import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.AutoConfigClient;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -23,42 +23,62 @@ import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.common.util.Lazy;
 import org.lwjgl.glfw.GLFW;
 
 @Mod("versiontooltips")
 public class VersionTooltipsNeoForge {
+    private static final KeyMapping.Category CATEGORY =
+            KeyMapping.Category.register(
+                    Identifier.fromNamespaceAndPath("versiontooltips", "main")
+            );
     private static VersionTooltipsConfig config;
-
-    public VersionTooltipsNeoForge(IEventBus modEventBus, ModContainer modContainer)
-    {   CommonClient.init();
-        if (FMLEnvironment.getDist().isClient()) {
-            ClientSetup.registerConfigScreen(modContainer);
-        }
-
-        modEventBus.addListener((FMLClientSetupEvent event) -> clientSetup());
+    public static final Lazy<KeyMapping> SHOW_KEY = Lazy.of(() ->
+            new KeyMapping(
+                    "key.versiontooltips.show",
+                    InputConstants.Type.KEYSYM,
+                    GLFW.GLFW_KEY_LEFT_SHIFT,
+                    CATEGORY
+            ));
+    private void registerKeyMappings(RegisterKeyMappingsEvent event) {
+        event.register(SHOW_KEY.get());
     }
 
+    private void registerReloadListeners(AddClientReloadListenersEvent event) {
+        event.addListener(Identifier.fromNamespaceAndPath("versiontooltips", "item_versions"), new ItemVersionLoader());
+    }
 
-    private static class ClientSetup {
-        private static void registerConfigScreen(ModContainer modContainer) {
-            modContainer.registerExtensionPoint(
-                    IConfigScreenFactory.class,
-                    (mc, parent) -> AutoConfigClient.getConfigScreen(VersionTooltipsConfig.class, parent).get()
-            );
-        }
+    private void registerClientCommands(RegisterClientCommandsEvent event) {
+        ModCommandsNeoForge.register(event.getDispatcher());
     }
 
     private void clientSetup() {
+        AutoConfig.register(VersionTooltipsConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(VersionTooltipsConfig.class).get();
 
         NeoForge.EVENT_BUS.addListener(this::onTooltip);
         NeoForge.EVENT_BUS.addListener(this::onPlayerJoin);
         NeoForge.EVENT_BUS.addListener(this::registerClientCommands);
     }
+    public VersionTooltipsNeoForge(IEventBus modEventBus, ModContainer modContainer)
+    {
+        if (FMLEnvironment.getDist().isClient()) {
+            ClientSetup.registerConfigScreen(modContainer);
+        }
 
+        modEventBus.addListener((FMLClientSetupEvent event) -> clientSetup());
+        modEventBus.addListener(this::registerKeyMappings);
+        modEventBus.addListener(this::registerReloadListeners);
+    }
+    private static class ClientSetup {
 
-    private void registerClientCommands(RegisterClientCommandsEvent event) {
-        ModCommandsNeoForge.register(event.getDispatcher());
+        private static void registerConfigScreen(ModContainer modContainer) {
+            modContainer.registerExtensionPoint(
+                    IConfigScreenFactory.class,
+                    (mc, parent) -> AutoConfigClient.getConfigScreen(VersionTooltipsConfig.class, parent).get()
+            );
+        }
+
     }
 
 
@@ -69,12 +89,13 @@ public class VersionTooltipsNeoForge {
         }
     }
 
+
     private void onTooltip(ItemTooltipEvent event) {
         if (config == null) return;
         if (!config.modActive) return;
         if (config.onlyShowWithAdvancedTooltips && !Minecraft.getInstance().options.advancedItemTooltips) return;
-        if (config.requireKeybind && CommonClient.SHOW_KEY != null) {
-            int boundKeyCode = CommonClient.SHOW_KEY.getKey().getValue();
+        if (config.requireKeybind && SHOW_KEY != null) {
+            int boundKeyCode = SHOW_KEY.get().getKey().getValue();
             if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), boundKeyCode)) return;
         }
 
