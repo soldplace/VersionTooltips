@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
@@ -19,12 +20,15 @@ import org.lwjgl.glfw.GLFW;
 import net.soldplace.ModCommands;
 
 public class VersionTooltipsClient implements ClientModInitializer {
+	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(
+			ResourceLocation.fromNamespaceAndPath("versiontooltips", "main")
+	);
 	public static final KeyMapping SHOW_KEY = KeyBindingHelper.registerKeyBinding(
 			new KeyMapping(
 					"key.versiontooltips.show",
 					InputConstants.Type.KEYSYM,
 					GLFW.GLFW_KEY_LEFT_SHIFT,
-					"key.category.versiontooltips"
+					CATEGORY
 			)
 	);
 	@Override
@@ -55,7 +59,7 @@ public class VersionTooltipsClient implements ClientModInitializer {
 
 			if (config.requireKeybind) {
 				int boundKeyCode = KeyBindingHelper.getBoundKeyOf(SHOW_KEY).getValue();
-				if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), boundKeyCode)) {
+				if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), boundKeyCode)) {
 					return;
 				}
 			}
