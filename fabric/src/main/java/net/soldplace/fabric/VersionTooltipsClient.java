@@ -8,10 +8,10 @@ import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
-import net.minecraft.resources.Identifier;
 import net.soldplace.config.VersionTooltipsConfig;
 import net.soldplace.data.ItemVersionLoader;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -23,25 +23,24 @@ public class VersionTooltipsClient implements ClientModInitializer {
 	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(
 			Identifier.fromNamespaceAndPath("versiontooltips", "main")
 	);
-	public static KeyMapping SHOW_KEY;
+	public static final KeyMapping SHOW_KEY = KeyMappingHelper.registerKeyMapping(
+			new KeyMapping(
+					"key.versiontooltips.show",
+					InputConstants.Type.KEYSYM,
+					GLFW.GLFW_KEY_LEFT_SHIFT,
+					CATEGORY
+			)
+	);
 	@Override
 	public void onInitializeClient() {
 		AutoConfig.register(VersionTooltipsConfig.class, GsonConfigSerializer::new);
-		ModCommands.register();
 		ResourceLoader.get(PackType.CLIENT_RESOURCES)
 				.registerReloadListener(Identifier.fromNamespaceAndPath("versiontooltips", "item_versions"), new ItemVersionLoader());
-
+		ModCommands.register();
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
 			ItemVersionLoader.reportMissingEnchantments(handler.registryAccess());
 			ItemVersionLoader.reportMissingPaintings(handler.registryAccess());
 		});
-
-		SHOW_KEY = KeyMappingHelper.registerKeyMapping(new KeyMapping(
-				"key.versiontooltips.show", // Translation key for the name
-				InputConstants.Type.KEYSYM,
-				GLFW.GLFW_KEY_LEFT_SHIFT,
-				CATEGORY
-		));
 
 		ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
 			var config = AutoConfig.getConfigHolder(VersionTooltipsConfig.class).getConfig();
