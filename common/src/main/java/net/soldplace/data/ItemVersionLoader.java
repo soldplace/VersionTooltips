@@ -7,8 +7,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.soldplace.nicolesrt;
 
 
@@ -29,35 +32,35 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
     private static final Type TYPE = new TypeToken<Map<String, String>>(){}.getType();
 
     public static ResourceLocation getEffectiveId(ItemStack stack) {
-        Potion potion = PotionUtils.getPotion(stack);
 
-        if (potion != null) {
+        if (stack.is(Items.POTION)
+                || stack.is(Items.SPLASH_POTION)
+                || stack.is(Items.LINGERING_POTION)
+                || stack.is(Items.TIPPED_ARROW)) {
+
+            Potion potion = PotionUtils.getPotion(stack);
+
             ResourceLocation effectId = BuiltInRegistries.POTION.getKey(potion);
 
-            if (effectId != null) {
-                String containerSuffix = switch (BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath()) {
-                    case "splash_potion"    -> "_splash";
-                    case "lingering_potion" -> "_lingering";
-                    case "tipped_arrow"     -> "_tipped";
-                    default                 -> "_normal";
-                };
+            String containerSuffix = switch (BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath()) {
+                case "splash_potion"    -> "_splash";
+                case "lingering_potion" -> "_lingering";
+                case "tipped_arrow"     -> "_tipped";
+                default                 -> "_normal";
+            };
 
-                return new ResourceLocation(
-                        effectId.getNamespace(),
-                        effectId.getPath() + containerSuffix
-                );
-            }
+            return new ResourceLocation(
+                    effectId.getNamespace(),
+                    effectId.getPath() + containerSuffix
+            );
         }
 
-        return null;
-    }
+        if (stack.is(Items.ENCHANTED_BOOK)) {
+            Map<Enchantment, Integer> storedEnchants = EnchantmentHelper.getEnchantments(stack);
 
-        var storedEnchants = stack.get(DataComponents.STORED_ENCHANTMENTS);
-        if (storedEnchants != null && !storedEnchants.isEmpty()) {
-            var first = storedEnchants.entrySet().iterator().next().getKey();
-            var key = first.unwrapKey();
-            if (key.isPresent()) {
-                return key.get().location();
+            if (!storedEnchants.isEmpty()) {
+                Enchantment first = storedEnchants.keySet().iterator().next();
+                return BuiltInRegistries.ENCHANTMENT.getKey(first);
             }
         }
 
@@ -70,45 +73,45 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
         BLOCK_VERSIONS_VERSION.clear();
         ITEM_VERSIONS_VERSION.clear();
 
-        manager.getResource(ResourceLocation.fromNamespaceAndPath("versiontooltips", "block_snapshots.json"))
+        manager.getResource(new ResourceLocation("versiontooltips", "block_snapshots.json"))
                 .ifPresent(resource -> {
                     try (var reader = new InputStreamReader(resource.open())) {
                         Map<String, String> raw = GSON.fromJson(reader, TYPE);
                         raw.forEach((key, value) ->
-                                BLOCK_VERSIONS_SNAPSHOT.put(ResourceLocation.parse(key), value)
+                                BLOCK_VERSIONS_SNAPSHOT.put(ResourceLocation.tryParse(key), value)
                         );
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
-        manager.getResource(ResourceLocation.fromNamespaceAndPath("versiontooltips", "item_snapshots.json"))
+        manager.getResource(new ResourceLocation("versiontooltips", "item_snapshots.json"))
                 .ifPresent(resource -> {
                     try (var reader = new InputStreamReader(resource.open())) {
                         Map<String, String> raw = GSON.fromJson(reader, TYPE);
                         raw.forEach((key, value) ->
-                                ITEM_VERSIONS_SNAPSHOT.put(ResourceLocation.parse(key), value)
+                                ITEM_VERSIONS_SNAPSHOT.put(ResourceLocation.tryParse(key), value)
                         );
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
-        manager.getResource(ResourceLocation.fromNamespaceAndPath("versiontooltips", "block_versions.json"))
+        manager.getResource(new ResourceLocation("versiontooltips", "block_versions.json"))
                 .ifPresent(resource -> {
                     try (var reader = new InputStreamReader(resource.open())) {
                         Map<String, String> raw = GSON.fromJson(reader, TYPE);
                         raw.forEach((key, value) ->
-                                BLOCK_VERSIONS_VERSION.put(ResourceLocation.parse(key), value)
+                                BLOCK_VERSIONS_VERSION.put(ResourceLocation.tryParse(key), value)
                         );
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
-        manager.getResource(ResourceLocation.fromNamespaceAndPath("versiontooltips", "item_versions.json"))
+        manager.getResource(new ResourceLocation("versiontooltips", "item_versions.json"))
                 .ifPresent(resource -> {
                     try (var reader = new InputStreamReader(resource.open())) {
                         Map<String, String> raw = GSON.fromJson(reader, TYPE);
                         raw.forEach((key, value) ->
-                                ITEM_VERSIONS_VERSION.put(ResourceLocation.parse(key), value)
+                                ITEM_VERSIONS_VERSION.put(ResourceLocation.tryParse(key), value)
                         );
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -140,7 +143,7 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
         for (ResourceLocation id : BuiltInRegistries.POTION.keySet()) {
             if (id.getPath().equals("empty")) continue;
             for (String suffix : new String[]{"_normal", "_splash", "_lingering", "_tipped"}) {
-                ResourceLocation compoundId = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath() + suffix);
+                ResourceLocation compoundId = new ResourceLocation(id.getNamespace(), id.getPath() + suffix);
                 String version = ITEM_VERSIONS_VERSION.get(compoundId);
                 String snapshot = ITEM_VERSIONS_SNAPSHOT.get(compoundId);
                 if (!nicolesrt.debug) return;

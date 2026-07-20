@@ -3,8 +3,8 @@ package net.soldplace.forge;
 import com.mojang.blaze3d.platform.InputConstants;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.forge.client.event.RegisterClientReloadListenersEvent;
-import net.minecraftforge.forge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.soldplace.config.VersionTooltipsConfig;
 import net.soldplace.data.ItemVersionLoader;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -16,16 +16,16 @@ import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.forge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.forge.client.event.RegisterClientCommandsEvent;
-import net.minecraftforge.forge.client.gui.IConfigScreenFactory;
-import net.minecraftforge.forge.common.NeoForge;
-import net.minecraftforge.forge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.forge.common.util.Lazy;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.RegisterClientCommandsEvent;
+import net.minecraftforge.client.gui.IConfigScreenFactory;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.common.util.Lazy;
 import org.lwjgl.glfw.GLFW;
 
 @Mod("versiontooltips")
-public class VersionTooltipsNeoForge {
+public class VersionTooltipsForge {
     private static VersionTooltipsConfig config;
     public static final Lazy<KeyMapping> SHOW_KEY = Lazy.of(() ->
             new KeyMapping(
@@ -43,18 +43,18 @@ public class VersionTooltipsNeoForge {
     }
 
     private void registerClientCommands(RegisterClientCommandsEvent event) {
-        ModCommandsNeoForge.register(event.getDispatcher());
+        net.soldplace.forge.ModCommandsForge.register(event.getDispatcher());
     }
 
     private void clientSetup() {
         AutoConfig.register(VersionTooltipsConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(VersionTooltipsConfig.class).get();
 
-        NeoForge.EVENT_BUS.addListener(this::onTooltip);
-        NeoForge.EVENT_BUS.addListener(this::onPlayerJoin);
-        NeoForge.EVENT_BUS.addListener(this::registerClientCommands);
+        MinecraftForge.EVENT_BUS.addListener(this::onTooltip);
+        MinecraftForge.EVENT_BUS.addListener(this::onPlayerJoin);
+        MinecraftForge.EVENT_BUS.addListener(this::registerClientCommands);
     }
-    public VersionTooltipsNeoForge(IEventBus modEventBus, ModContainer modContainer)
+    public VersionTooltipsForge(IEventBus modEventBus, ModContainer modContainer)
     {
         if (FMLEnvironment.dist.isClient()) {
             ClientSetup.registerConfigScreen(modContainer);

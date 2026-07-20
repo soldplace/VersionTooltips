@@ -9,7 +9,7 @@ public class FabricItemVersionLoader extends ItemVersionLoader
 
     @Override
     public ResourceLocation getFabricId() {
-        return ResourceLocation.fromNamespaceAndPath(
+        return new ResourceLocation(
                 "versiontooltips",
                 "item_versions");
     }

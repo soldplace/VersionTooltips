@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
@@ -39,8 +40,10 @@ public class VersionTooltipsClient implements ClientModInitializer {
 			ItemVersionLoader.reportMissingEnchantments(handler.registryAccess());
 		});
 
-		ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
+
+		ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
 			var config = AutoConfig.getConfigHolder(VersionTooltipsConfig.class).getConfig();
+
 
 			if (!config.modActive) {
 				return;
@@ -60,8 +63,6 @@ public class VersionTooltipsClient implements ClientModInitializer {
 			}
 
 			var id = ItemVersionLoader.getEffectiveId(stack);
-
-
 
 			if (config.type == VersionTooltipsConfig.TooltipType.SnapshotOnly) {
 				String snapshot = ItemVersionLoader.BLOCK_VERSIONS_SNAPSHOT.get(id);
@@ -140,10 +141,6 @@ public class VersionTooltipsClient implements ClientModInitializer {
 					}
 				}
 			}
-
-
-
-
 		});
 	}
 }
