@@ -111,142 +111,61 @@ public class VersionTooltipsForge {
 
 
     private void onTooltip(ItemTooltipEvent event) {
-
         if (config == null) return;
         if (!config.modActive) return;
-
-        if (config.onlyShowWithAdvancedTooltips
-                && !Minecraft.getInstance()
-                .options
-                .advancedItemTooltips) {
-            return;
+        if (config.onlyShowWithAdvancedTooltips && !Minecraft.getInstance().options.advancedItemTooltips) return;
+        if (config.requireKeybind && SHOW_KEY != null) {
+            int boundKeyCode = SHOW_KEY.get().getKey().getValue();
+            if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), boundKeyCode)) return;
         }
 
-
-        if (config.requireKeybind) {
-
-            int key = SHOW_KEY.get()
-                    .getKey()
-                    .getValue();
-
-            if (!InputConstants.isKeyDown(
-                    Minecraft.getInstance()
-                            .getWindow()
-                            .getWindow(),
-                    key)) {
-                return;
-            }
-        }
-
-
-        var id = ItemVersionLoader.getEffectiveId(
-                event.getItemStack()
-        );
-
+        var id = ItemVersionLoader.getEffectiveId(event.getItemStack());
         if (id == null) return;
 
-
         var lines = event.getToolTip();
+        String snapshot = ItemVersionLoader.BLOCK_VERSIONS_SNAPSHOT.get(id);
+        if (snapshot == null) snapshot = ItemVersionLoader.ITEM_VERSIONS_SNAPSHOT.get(id);
 
+        String version = ItemVersionLoader.BLOCK_VERSIONS_VERSION.get(id);
+        if (version == null) version = ItemVersionLoader.ITEM_VERSIONS_VERSION.get(id);
 
-        String snapshot =
-                ItemVersionLoader.BLOCK_VERSIONS_SNAPSHOT.get(id);
-
-        if (snapshot == null) {
-            snapshot =
-                    ItemVersionLoader.ITEM_VERSIONS_SNAPSHOT.get(id);
+        if (config.type == VersionTooltipsConfig.TooltipType.SnapshotOnly) {
+            if (snapshot == null) return;
+            if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
+                lines.add(Component.literal("+ ").withStyle(ChatFormatting.RED)
+                        .append(Component.literal(snapshot).withStyle(ChatFormatting.WHITE)));
+            } else {
+                lines.add(Component.literal("Added in " + snapshot).withStyle(ChatFormatting.DARK_GRAY));
+            }
         }
 
-
-        String version =
-                ItemVersionLoader.BLOCK_VERSIONS_VERSION.get(id);
-
-        if (version == null) {
-            version =
-                    ItemVersionLoader.ITEM_VERSIONS_VERSION.get(id);
+        if (config.type == VersionTooltipsConfig.TooltipType.VersionOnly) {
+            if (version == null) return;
+            if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
+                lines.add(Component.literal("+ ").withStyle(ChatFormatting.BLUE)
+                        .append(Component.literal(version).withStyle(ChatFormatting.WHITE)));
+            } else {
+                lines.add(Component.literal("Added in " + version).withStyle(ChatFormatting.DARK_GRAY));
+            }
         }
 
-
-
-        switch (config.type) {
-
-            case SnapshotOnly -> {
-                if (snapshot == null) return;
-
-                if (config.style ==
-                        VersionTooltipsConfig.TooltipStyle.Modded) {
-
-                    lines.add(
-                            Component.literal("+ ")
-                                    .withStyle(ChatFormatting.RED)
-                                    .append(
-                                            Component.literal(snapshot)
-                                                    .withStyle(ChatFormatting.WHITE)
-                                    )
-                    );
-
-                } else {
-                    lines.add(
-                            Component.literal(
-                                    "Added in " + snapshot
-                            ).withStyle(ChatFormatting.DARK_GRAY)
-                    );
-                }
+        if (config.type == VersionTooltipsConfig.TooltipType.VersionSnapshot) {
+            if (version == null || snapshot == null) return;
+            if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
+                lines.add(Component.literal("+ ").withStyle(ChatFormatting.GREEN)
+                        .append(Component.literal(version + " (" + snapshot + ")").withStyle(ChatFormatting.WHITE)));
+            } else {
+                lines.add(Component.literal("Added in " + version + " (" + snapshot + ")").withStyle(ChatFormatting.DARK_GRAY));
             }
+        }
 
-
-            case VersionOnly -> {
-                if (version == null) return;
-
-                if (config.style ==
-                        VersionTooltipsConfig.TooltipStyle.Modded) {
-
-                    lines.add(
-                            Component.literal("+ ")
-                                    .withStyle(ChatFormatting.BLUE)
-                                    .append(
-                                            Component.literal(version)
-                                                    .withStyle(ChatFormatting.WHITE)
-                                    )
-                    );
-
-                } else {
-                    lines.add(
-                            Component.literal(
-                                    "Added in " + version
-                            ).withStyle(ChatFormatting.DARK_GRAY)
-                    );
-                }
-            }
-
-
-            case VersionSnapshot -> {
-                if (version == null || snapshot == null) return;
-
-                lines.add(
-                        Component.literal(
-                                "Added in " +
-                                        version +
-                                        " (" +
-                                        snapshot +
-                                        ")"
-                        ).withStyle(ChatFormatting.DARK_GRAY)
-                );
-            }
-
-
-            case SnapshotVersion -> {
-                if (version == null || snapshot == null) return;
-
-                lines.add(
-                        Component.literal(
-                                "Added in " +
-                                        snapshot +
-                                        " (" +
-                                        version +
-                                        ")"
-                        ).withStyle(ChatFormatting.DARK_GRAY)
-                );
+        if (config.type == VersionTooltipsConfig.TooltipType.SnapshotVersion) {
+            if (version == null || snapshot == null) return;
+            if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
+                lines.add(Component.literal("+ ").withStyle(ChatFormatting.GREEN)
+                        .append(Component.literal(snapshot + " (" + version + ")").withStyle(ChatFormatting.WHITE)));
+            } else {
+                lines.add(Component.literal("Added in " + snapshot + " (" + version + ")").withStyle(ChatFormatting.DARK_GRAY));
             }
         }
     }
