@@ -1,27 +1,27 @@
-package net.soldplace.neoforge;
+package net.soldplace.forge;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.minecraft.client.KeyMapping;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.forge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.forge.client.event.RegisterKeyMappingsEvent;
 import net.soldplace.config.VersionTooltipsConfig;
 import net.soldplace.data.ItemVersionLoader;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
-import net.neoforged.neoforge.common.util.Lazy;
+import net.minecraftforge.bus.api.IEventBus;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.forge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.forge.client.event.RegisterClientCommandsEvent;
+import net.minecraftforge.forge.client.gui.IConfigScreenFactory;
+import net.minecraftforge.forge.common.NeoForge;
+import net.minecraftforge.forge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.forge.common.util.Lazy;
 import org.lwjgl.glfw.GLFW;
 
 @Mod("versiontooltips")

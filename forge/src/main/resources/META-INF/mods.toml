@@ -21,16 +21,16 @@ ordering="NONE"
 side="BOTH"
 
 [[dependencies.versiontooltips]]
-modId="neoforge"
+modId="forge"
 type="required"
-versionRange="[21.0,)"
+versionRange="[1.20-46.0.14,)"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.versiontooltips]]
 modId="cloth_config"
 type="required"
-versionRange="[15.0.140,)"
+versionRange="[11.1.136,)"
 ordering="BEFORE"
 side="BOTH"
 

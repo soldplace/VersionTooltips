@@ -1,4 +1,4 @@
-package net.soldplace.neoforge;
+package net.soldplace.forge;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
