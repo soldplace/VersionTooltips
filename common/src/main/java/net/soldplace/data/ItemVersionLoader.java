@@ -2,12 +2,13 @@ package net.soldplace.data;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.soldplace.nicolesrt;
 
 
@@ -28,20 +29,28 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
     private static final Type TYPE = new TypeToken<Map<String, String>>(){}.getType();
 
     public static ResourceLocation getEffectiveId(ItemStack stack) {
-        var potionContents = stack.get(DataComponents.POTION_CONTENTS);
-        if (potionContents != null && potionContents.potion().isPresent()) {
-            var key = potionContents.potion().get().unwrapKey();
-            if (key.isPresent()) {
-                ResourceLocation effectId = key.get().location();
+        Potion potion = PotionUtils.getPotion(stack);
+
+        if (potion != null) {
+            ResourceLocation effectId = BuiltInRegistries.POTION.getKey(potion);
+
+            if (effectId != null) {
                 String containerSuffix = switch (BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath()) {
                     case "splash_potion"    -> "_splash";
                     case "lingering_potion" -> "_lingering";
                     case "tipped_arrow"     -> "_tipped";
                     default                 -> "_normal";
                 };
-                return ResourceLocation.fromNamespaceAndPath(effectId.getNamespace(), effectId.getPath() + containerSuffix);
+
+                return new ResourceLocation(
+                        effectId.getNamespace(),
+                        effectId.getPath() + containerSuffix
+                );
             }
         }
+
+        return null;
+    }
 
         var storedEnchants = stack.get(DataComponents.STORED_ENCHANTMENTS);
         if (storedEnchants != null && !storedEnchants.isEmpty()) {
