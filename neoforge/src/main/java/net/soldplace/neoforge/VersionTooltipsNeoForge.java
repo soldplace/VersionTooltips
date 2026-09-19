@@ -22,6 +22,7 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.soldplace.forge.ModCommandsNeoForge;
 import org.lwjgl.glfw.GLFW;
 
 @Mod("versiontooltips")

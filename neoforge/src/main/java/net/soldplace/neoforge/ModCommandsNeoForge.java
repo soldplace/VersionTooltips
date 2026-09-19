@@ -13,7 +13,7 @@ import net.soldplace.config.VersionTooltipsConfig;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-public class ModCommandsForge {
+public class ModCommandsNeoForge {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
