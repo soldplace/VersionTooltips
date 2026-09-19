@@ -4,7 +4,7 @@ plugins {
 
 architectury {
     platformSetupLoomIde()
-    forge()
+    neoForge()
 }
 
 configurations {
@@ -22,9 +22,11 @@ configurations {
     }
 }
 
-maven {
-    name = 'NeoForged'
-    url = 'https://maven.neoforged.net/releases'
+repositories {
+    maven {
+        name = 'NeoForged'
+        url = 'https://maven.neoforged.net/releases'
+    }
 }
 
 dependencies {
