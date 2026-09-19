@@ -1,85 +1,111 @@
 package net.soldplace.neoforge;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
-import net.minecraft.client.KeyMapping;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.soldplace.config.VersionTooltipsConfig;
-import net.soldplace.data.ItemVersionLoader;
 import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.ConfigScreenHandler;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
-import net.neoforged.neoforge.client.gui;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.soldplace.forge.ModCommandsNeoForge;
+
+import net.soldplace.config.VersionTooltipsConfig;
+import net.soldplace.data.ItemVersionLoader;
+
 import org.lwjgl.glfw.GLFW;
 
 @Mod("versiontooltips")
 public class VersionTooltipsNeoForge {
+
     private static VersionTooltipsConfig config;
+
     public static final Lazy<KeyMapping> SHOW_KEY = Lazy.of(() ->
             new KeyMapping(
                     "key.versiontooltips.show",
                     InputConstants.Type.KEYSYM,
                     GLFW.GLFW_KEY_LEFT_SHIFT,
                     "key.category.versiontooltips"
-            ));
-    private void registerKeyMappings(RegisterKeyMappingsEvent event) {
-        event.register(SHOW_KEY.get());
-    }
+            )
+    );
 
-    private void registerReloadListeners(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(new ItemVersionLoader());
-    }
 
-    private void registerClientCommands(RegisterClientCommandsEvent event) {
-        ModCommandsNeoForge.register(event.getDispatcher());
-    }
+    public VersionTooltipsNeoForge() {
 
-    private void clientSetup() {
-        AutoConfig.register(VersionTooltipsConfig.class, GsonConfigSerializer::new);
-        config = AutoConfig.getConfigHolder(VersionTooltipsConfig.class).get();
+        if (FMLEnvironment.dist.isClient()) {
+            ModLoadingContext.get().registerExtensionPoint(
+                    ConfigScreenHandler.ConfigScreenFactory.class,
+                    () -> new ConfigScreenHandler.ConfigScreenFactory(
+                            (minecraft, parent) ->
+                                    AutoConfig.getConfigScreen(
+                                            VersionTooltipsConfig.class,
+                                            parent
+                                    ).get()
+                    )
+            );
+        }
+
+        var modBus = net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext
+                .get()
+                .getModEventBus();
+
+        modBus.addListener(this::clientSetup);
+        modBus.addListener(this::registerKeyMappings);
+        modBus.addListener(this::registerReloadListeners);
 
         NeoForge.EVENT_BUS.addListener(this::onTooltip);
         NeoForge.EVENT_BUS.addListener(this::onPlayerJoin);
         NeoForge.EVENT_BUS.addListener(this::registerClientCommands);
     }
-    public VersionTooltipsNeoForge(IEventBus modEventBus, ModContainer modContainer)
-    {
-        if (FMLEnvironment.dist.isClient()) {
-            ClientSetup.registerConfigScreen(modContainer);
-        }
 
-        modEventBus.addListener((FMLClientSetupEvent event) -> clientSetup());
-        modEventBus.addListener(this::registerKeyMappings);
-        modEventBus.addListener(this::registerReloadListeners);
+
+    private void clientSetup(FMLClientSetupEvent event) {
+        AutoConfig.register(
+                VersionTooltipsConfig.class,
+                GsonConfigSerializer::new
+        );
+
+        config = AutoConfig.getConfigHolder(
+                VersionTooltipsConfig.class
+        ).get();
     }
-    private static class ClientSetup {
 
-        private static void registerConfigScreen(ModContainer modContainer) {
-            modContainer.registerExtensionPoint(
-                    IConfigScreenFactory.class,
-                    (mc, parent) -> AutoConfig.getConfigScreen(VersionTooltipsConfig.class, parent).get()
-            );
-        }
 
+    private void registerKeyMappings(RegisterKeyMappingsEvent event) {
+        event.register(SHOW_KEY.get());
+    }
+
+
+    private void registerReloadListeners(RegisterClientReloadListenersEvent event) {
+        event.registerReloadListener(new ItemVersionLoader());
+    }
+
+
+    private void registerClientCommands(RegisterClientCommandsEvent event) {
+        net.soldplace.neoforge.ModCommandsNeoForge.register(
+                event.getDispatcher()
+        );
     }
 
 
     private void onPlayerJoin(ClientPlayerNetworkEvent.LoggingIn event) {
+
         if (Minecraft.getInstance().getConnection() != null) {
-            ItemVersionLoader.reportMissingEnchantments(Minecraft.getInstance().getConnection().registryAccess());
+            ItemVersionLoader.reportMissingEnchantments(
+                    Minecraft.getInstance()
+                            .getConnection()
+                            .registryAccess()
+            );
         }
     }
 
