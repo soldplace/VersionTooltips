@@ -24,7 +24,6 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.common.util.Lazy;
-import org.lwjgl.glfw.GLFW;
 
 @Mod("versiontooltips")
 public class VersionTooltipsNeoForge {
@@ -36,8 +35,8 @@ public class VersionTooltipsNeoForge {
     public static final Lazy<KeyMapping> SHOW_KEY = Lazy.of(() ->
             new KeyMapping(
                     "key.versiontooltips.show",
-                    InputConstants.Type.KEYSYM,
-                    GLFW.GLFW_KEY_LEFT_SHIFT,
+                    InputConstants.Type.KEYBOARD,
+                    InputConstants.KEY_LSHIFT,
                     CATEGORY
             ));
     private void registerKeyMappings(RegisterKeyMappingsEvent event) {
@@ -96,7 +95,7 @@ public class VersionTooltipsNeoForge {
         if (config.onlyShowWithAdvancedTooltips && !Minecraft.getInstance().options.advancedItemTooltips) return;
         if (config.requireKeybind && SHOW_KEY != null) {
             int boundKeyCode = SHOW_KEY.get().getKey().getValue();
-            if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), boundKeyCode)) return;
+            if (!InputConstants.isKeyDown(boundKeyCode)) return;
         }
 
         var id = ItemVersionLoader.getEffectiveId(event.getItemStack());

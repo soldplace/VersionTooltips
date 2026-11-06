@@ -16,8 +16,9 @@ import net.soldplace.config.VersionTooltipsConfig;
 import net.soldplace.data.ItemVersionLoader;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
-import org.lwjgl.glfw.GLFW;
 import net.soldplace.ModCommands;
+
+import javax.swing.*;
 
 public class VersionTooltipsClient implements ClientModInitializer {
 	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(
@@ -26,8 +27,8 @@ public class VersionTooltipsClient implements ClientModInitializer {
 	public static final KeyMapping SHOW_KEY = KeyMappingHelper.registerKeyMapping(
 			new KeyMapping(
 					"key.versiontooltips.show",
-					InputConstants.Type.KEYSYM,
-					GLFW.GLFW_KEY_LEFT_SHIFT,
+					InputConstants.Type.KEYBOARD,
+					InputConstants.KEY_LSHIFT,
 					CATEGORY
 			)
 	);
@@ -57,7 +58,7 @@ public class VersionTooltipsClient implements ClientModInitializer {
 
 			if (config.requireKeybind) {
 				int boundKeyCode = KeyMappingHelper.getBoundKeyOf(SHOW_KEY).getValue();
-				if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), boundKeyCode)) {
+				if (!InputConstants.isKeyDown(boundKeyCode)) {
 					return;
 				}
 			}
