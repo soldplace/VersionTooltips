@@ -11,7 +11,7 @@ description='''
         This mod adds a simple toggleable tooltip that shows in what version an item was added to the game.
     '''
 authors="soldplace, Nicole.srt"
-logoFile="VersionTooltipsIcon128x128.png"
+logoFile="versiontooltipsicon128x128.png"
 
 [[dependencies.versiontooltips]]
 modId="minecraft"

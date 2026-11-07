@@ -12,7 +12,7 @@
 		"sources": "https://github.com/nicolesrt/VersionTooltips"
 	},
 	"license": "CC-NC-4.0",
-	"icon": "assets/versiontooltips/VersionTooltipsIcon128x128.png",
+	"icon": "assets/versiontooltips/versiontooltipsicon128x128.png",
 	"environment": "*",
 	"entrypoints": {
 		"client": [
