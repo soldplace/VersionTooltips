@@ -16,6 +16,7 @@ logoFile="VersionTooltipsIcon128x128.png"
 [[dependencies.versiontooltips]]
 modId="minecraft"
 type="required"
+mandatory = true
 versionRange="[1.20.2,1.20.3]"
 ordering="NONE"
 side="BOTH"
@@ -23,6 +24,7 @@ side="BOTH"
 [[dependencies.versiontooltips]]
 modId="neoforge"
 type="required"
+mandatory = true
 versionRange="[20.2,)"
 ordering="NONE"
 side="BOTH"
@@ -30,7 +32,8 @@ side="BOTH"
 [[dependencies.versiontooltips]]
 modId="cloth_config"
 type="required"
-versionRange="[12.0.137,)"
+mandatory = true
+versionRange="[12.0.119,)"
 ordering="BEFORE"
 side="BOTH"
 
