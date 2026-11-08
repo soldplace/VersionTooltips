@@ -30,7 +30,7 @@ side="BOTH"
 [[dependencies.versiontooltips]]
 modId="cloth_config"
 mandatory = true
-versionRange="[12.0.137,)"
+versionRange="[12.0.119,)"
 ordering="BEFORE"
 side="BOTH"
 
