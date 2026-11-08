@@ -16,21 +16,21 @@ logoFile="versiontooltipsicon128x128.png"
 [[dependencies.versiontooltips]]
 modId="minecraft"
 mandatory = true
-versionRange="[1.20.2,1.20.4]"
+versionRange="[1.20.5,1.20.6]"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.versiontooltips]]
 modId="forge"
 mandatory = true
-versionRange="[46,)"
+versionRange="[50,)"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.versiontooltips]]
 modId="cloth_config"
 mandatory = true
-versionRange="[12.0.119,)"
+versionRange="[14.0.139,)"
 ordering="BEFORE"
 side="BOTH"
 
