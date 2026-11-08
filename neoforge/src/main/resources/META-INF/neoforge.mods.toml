@@ -5,7 +5,7 @@ issueTrackerURL="https://github.com/nicolesrt/VersionTooltips"
 
 [[mods]]
 modId="versiontooltips"
-version="$version"
+version="${version}"
 displayName="Version Tooltips"
 description='''
         This mod adds a simple toggleable tooltip that shows in what version an item was added to the game.
