@@ -37,7 +37,7 @@ public class VersionTooltipsClient implements ClientModInitializer {
 				.registerReloadListener(new FabricItemVersionLoader());
 		ModCommands.register();
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-			ItemVersionLoader.reportMissingEnchantments(handler.registryAccess());
+			ItemVersionLoader.reportMissingEnchantments();
 		});
 
 

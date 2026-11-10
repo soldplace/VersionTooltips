@@ -20,14 +20,14 @@ public class ModCommandsForge {
                 Commands.literal("versiontooltips")
                         .executes(ctx -> {
                             var config = AutoConfig.getConfigHolder(VersionTooltipsConfig.class).getConfig();
-                            ctx.getSource().sendSystemMessage(Component.literal(
+                            ctx.getSource().sendSuccess(Component.literal(
                                     "Current Version Tooltips config:\n" +
                                             "  §6active:§r           " + config.modActive + "\n" +
                                             "  §6type:§r             " + config.type.name() + "\n" +
                                             "  §6style:§r            " + config.style.name() + "\n" +
                                             "  §6requirekeybind:§r " + config.requireKeybind + "\n" +
                                             "  §6advancedonly:§r " + config.onlyShowWithAdvancedTooltips
-                            ));
+                            ), false);
                             return 1;
                         })
 
@@ -36,8 +36,8 @@ public class ModCommandsForge {
                                         .executes(ctx -> {
                                             boolean value = BoolArgumentType.getBool(ctx, "value");
                                             setConfig(c -> c.modActive = value);
-                                            ctx.getSource().sendSystemMessage(Component.literal(
-                                                    "§6[VersionTooltips]§r active set to " + value));
+                                            ctx.getSource().sendSuccess(Component.literal(
+                                                    "§6[VersionTooltips]§r active set to " + value), false);
                                             return 1;
                                         })
                                 )
@@ -54,14 +54,14 @@ public class ModCommandsForge {
                                             try {
                                                 var parsed = VersionTooltipsConfig.TooltipType.valueOf(value);
                                                 setConfig(c -> c.type = parsed);
-                                                ctx.getSource().sendSystemMessage(Component.literal(
-                                                        "§6[VersionTooltips]§r type set to " + parsed.name()));
+                                                ctx.getSource().sendSuccess(Component.literal(
+                                                        "§6[VersionTooltips]§r type set to " + parsed.name()), false);
                                             } catch (IllegalArgumentException e) {
-                                                ctx.getSource().sendSystemMessage(Component.literal(
+                                                ctx.getSource().sendSuccess(Component.literal(
                                                         "§6[VersionTooltips]§r Unknown type '" + value + "'. Options: " +
                                                                 Arrays.stream(VersionTooltipsConfig.TooltipType.values())
                                                                         .map(Enum::name)
-                                                                        .reduce((a, b) -> a + ", " + b).orElse("")));
+                                                                        .reduce((a, b) -> a + ", " + b).orElse("")), false);
                                             }
                                             return 1;
                                         })
@@ -79,11 +79,11 @@ public class ModCommandsForge {
                                             try {
                                                 var parsed = VersionTooltipsConfig.TooltipStyle.valueOf(value);
                                                 setConfig(c -> c.style = parsed);
-                                                ctx.getSource().sendSystemMessage(Component.literal(
-                                                        "§6[VersionTooltips]§r style set to " + parsed.name()));
+                                                ctx.getSource().sendSuccess(Component.literal(
+                                                        "§6[VersionTooltips]§r style set to " + parsed.name()), false);
                                             } catch (IllegalArgumentException e) {
-                                                ctx.getSource().sendSystemMessage(Component.literal(
-                                                        "§6[VersionTooltips]§r Unknown style '" + value + "'. Options: Vanilla, Modded"));
+                                                ctx.getSource().sendSuccess(Component.literal(
+                                                        "§6[VersionTooltips]§r Unknown style '" + value + "'. Options: Vanilla, Modded"), false);
                                             }
                                             return 1;
                                         })
@@ -95,8 +95,8 @@ public class ModCommandsForge {
                                         .executes(ctx -> {
                                             boolean value = BoolArgumentType.getBool(ctx, "value");
                                             setConfig(c -> c.requireKeybind = value);
-                                            ctx.getSource().sendSystemMessage(Component.literal(
-                                                    "§6[VersionTooltips]§r keybind set to " + value));
+                                            ctx.getSource().sendSuccess(Component.literal(
+                                                    "§6[VersionTooltips]§r keybind set to " + value) ,false);
                                             return 1;
                                         })
                                 )
@@ -107,8 +107,8 @@ public class ModCommandsForge {
                                         .executes(ctx -> {
                                             boolean value = BoolArgumentType.getBool(ctx, "value");
                                             setConfig(c -> c.onlyShowWithAdvancedTooltips = value);
-                                            ctx.getSource().sendSystemMessage(Component.literal(
-                                                    "§6[VersionTooltips]§r advancedonly set to " + value));
+                                            ctx.getSource().sendSuccess(Component.literal(
+                                                    "§6[VersionTooltips]§r advancedonly set to " + value), false);
                                             return 1;
                                         })
                                 )

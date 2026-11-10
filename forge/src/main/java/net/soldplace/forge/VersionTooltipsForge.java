@@ -101,11 +101,7 @@ public class VersionTooltipsForge {
     private void onPlayerJoin(ClientPlayerNetworkEvent.LoggingIn event) {
 
         if (Minecraft.getInstance().getConnection() != null) {
-            ItemVersionLoader.reportMissingEnchantments(
-                    Minecraft.getInstance()
-                            .getConnection()
-                            .registryAccess()
-            );
+            ItemVersionLoader.reportMissingEnchantments();
         }
     }
 

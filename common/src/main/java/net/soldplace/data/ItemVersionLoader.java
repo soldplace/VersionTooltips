@@ -2,7 +2,7 @@ package net.soldplace.data;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.MappedRegistry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
@@ -40,9 +40,9 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
 
             Potion potion = PotionUtils.getPotion(stack);
 
-            ResourceLocation effectId = BuiltInRegistries.POTION.getKey(potion);
+            ResourceLocation effectId = MappedRegistry.POTION.getKey(potion);
 
-            String containerSuffix = switch (BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath()) {
+            String containerSuffix = switch (MappedRegistry.ITEM.getKey(stack.getItem()).getPath()) {
                 case "splash_potion"    -> "_splash";
                 case "lingering_potion" -> "_lingering";
                 case "tipped_arrow"     -> "_tipped";
@@ -60,11 +60,11 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
 
             if (!storedEnchants.isEmpty()) {
                 Enchantment first = storedEnchants.keySet().iterator().next();
-                return BuiltInRegistries.ENCHANTMENT.getKey(first);
+                return MappedRegistry.ENCHANTMENT.getKey(first);
             }
         }
 
-        return BuiltInRegistries.ITEM.getKey(stack.getItem());
+        return MappedRegistry.ITEM.getKey(stack.getItem());
     }
 
     public void reload(ResourceManager manager) {
@@ -125,7 +125,7 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
         List<String> missingItems = new ArrayList<>();
         List<String> missingPotions = new ArrayList<>();
 
-        for (ResourceLocation id : BuiltInRegistries.ITEM.keySet()) {
+        for (ResourceLocation id : MappedRegistry.ITEM.keySet()) {
             String version = BLOCK_VERSIONS_VERSION.get(id);
             if (version == null) {
                 version = ITEM_VERSIONS_VERSION.get(id);
@@ -140,7 +140,7 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
             }
         }
         // Potions logic
-        for (ResourceLocation id : BuiltInRegistries.POTION.keySet()) {
+        for (ResourceLocation id : MappedRegistry.POTION.keySet()) {
             if (id.getPath().equals("empty")) continue;
             for (String suffix : new String[]{"_normal", "_splash", "_lingering", "_tipped"}) {
                 ResourceLocation compoundId = new ResourceLocation(id.getNamespace(), id.getPath() + suffix);
@@ -163,24 +163,30 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
             System.out.println("[VersionTooltips] " + missingPotions.size() + " potion(s) missing version data:\n" + String.join("\n", missingPotions));
         }
     }
-    public static void reportMissingEnchantments(net.minecraft.core.RegistryAccess registryManager) {
-        var enchantmentRegistry = registryManager.lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT);
+    public static void reportMissingEnchantments() {
+
+        if (!nicolesrt.debug) return;
+
         List<String> missing = new ArrayList<>();
 
-        enchantmentRegistry.listElements().forEach(holder -> {
-            ResourceLocation id = holder.key().location();
+        for (ResourceLocation id : MappedRegistry.ENCHANTMENT.keySet()) {
+
             String version = ITEM_VERSIONS_VERSION.get(id);
             String snapshot = ITEM_VERSIONS_SNAPSHOT.get(id);
-            if (!nicolesrt.debug) return;
+
             if (version == null || snapshot == null) {
                 missing.add("\"" + id + "\": \"\",");
             }
-        });
+        }
+
         if (missing.isEmpty()) {
             System.out.println("[VersionTooltips] No missing enchantments - every enchantment has version data.");
             return;
         }
-        System.out.println("[VersionTooltips] " + missing.size() + " enchantment(s) missing version data:\n" + String.join("\n", missing));
+
+        System.out.println("[VersionTooltips] " + missing.size()
+                + " enchantment(s) missing version data:\n"
+                + String.join("\n", missing));
     }
 
     @Override
