@@ -11,10 +11,10 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
 
-import net.minecraftforge.client.ClientRegistry;
-import net.minecraftforge.client.ConfigGuiHandler;
+import net.minecraftforge.fmlclient.ConfigGuiHandler;
+import net.minecraftforge.fmlclient.registry.ClientRegistry;
+
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
-import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Lazy;
@@ -47,6 +47,7 @@ public class VersionTooltipsForge {
     public VersionTooltipsForge() {
 
         if (FMLEnvironment.dist.isClient()) {
+            ModCommandsForge.register();
             ModLoadingContext.get().registerExtensionPoint(
                     ConfigGuiHandler.ConfigGuiFactory.class,
                     () -> new ConfigGuiHandler.ConfigGuiFactory(
@@ -68,7 +69,6 @@ public class VersionTooltipsForge {
 
         MinecraftForge.EVENT_BUS.addListener(this::onTooltip);
         MinecraftForge.EVENT_BUS.addListener(this::onPlayerJoin);
-        MinecraftForge.EVENT_BUS.addListener(this::registerClientCommands);
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
@@ -89,10 +89,6 @@ public class VersionTooltipsForge {
 
     private void registerReloadListeners(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener(new ItemVersionLoader());
-    }
-
-    private void registerClientCommands(RegisterClientCommandsEvent event) {
-        ModCommandsForge.register(event.getDispatcher());
     }
 
     private void onPlayerJoin(ClientPlayerNetworkEvent.LoggedInEvent event) {

@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[39,)"
+loaderVersion="[37,)"
 license="CC-NC-4.0"
 issueTrackerURL="https://github.com/nicolesrt/VersionTooltips"
 
@@ -16,21 +16,21 @@ logoFile="VersionTooltipsIcon128x128.png"
 [[dependencies.versiontooltips]]
 modId="minecraft"
 mandatory = true
-versionRange="[1.18,1.18.2]"
+versionRange="[1.17,1.17.1]"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.versiontooltips]]
 modId="forge"
 mandatory = true
-versionRange="[39,)"
+versionRange="[37,)"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.versiontooltips]]
 modId="cloth_config"
 mandatory = true
-versionRange="[6.5.102,)"
+versionRange="[5.3.63,)"
 ordering="BEFORE"
 side="BOTH"
 
