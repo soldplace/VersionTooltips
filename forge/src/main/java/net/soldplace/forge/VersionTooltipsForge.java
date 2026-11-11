@@ -1,17 +1,21 @@
+
 package net.soldplace.forge;
 
 import com.mojang.blaze3d.platform.InputConstants;
+
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.client.ConfigGuiHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -39,13 +43,12 @@ public class VersionTooltipsForge {
             )
     );
 
-
     public VersionTooltipsForge() {
 
         if (FMLEnvironment.dist.isClient()) {
             ModLoadingContext.get().registerExtensionPoint(
-                    ConfigScreenHandler.ConfigScreenFactory.class,
-                    () -> new ConfigScreenHandler.ConfigScreenFactory(
+                    ConfigGuiHandler.ConfigGuiFactory.class,
+                    () -> new ConfigGuiHandler.ConfigGuiFactory(
                             (minecraft, parent) ->
                                     AutoConfig.getConfigScreen(
                                             VersionTooltipsConfig.class,
@@ -60,14 +63,11 @@ public class VersionTooltipsForge {
                 .getModEventBus();
 
         modBus.addListener(this::clientSetup);
-        modBus.addListener(this::registerKeyMappings);
         modBus.addListener(this::registerReloadListeners);
 
         MinecraftForge.EVENT_BUS.addListener(this::onTooltip);
         MinecraftForge.EVENT_BUS.addListener(this::onPlayerJoin);
-        MinecraftForge.EVENT_BUS.addListener(this::registerClientCommands);
     }
-
 
     private void clientSetup(FMLClientSetupEvent event) {
         AutoConfig.register(
@@ -78,90 +78,120 @@ public class VersionTooltipsForge {
         config = AutoConfig.getConfigHolder(
                 VersionTooltipsConfig.class
         ).get();
+
+        event.enqueueWork(() ->
+                ClientRegistry.registerKeyBinding(SHOW_KEY.get())
+        );
     }
 
-
-    private void registerKeyMappings(RegisterKeyMappingsEvent event) {
-        event.register(SHOW_KEY.get());
-    }
 
 
     private void registerReloadListeners(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener(new ItemVersionLoader());
     }
 
-
-    private void registerClientCommands(RegisterClientCommandsEvent event) {
-        net.soldplace.forge.ModCommandsForge.register(
-                event.getDispatcher()
+    if (FMLEnvironment.dist.isClient()) {
+        ModLoadingContext.get().registerExtensionPoint(
+                ConfigGuiHandler.ConfigGuiFactory.class,
+                () -> new ConfigGuiHandler.ConfigGuiFactory(
+                        (minecraft, parent) ->
+                                AutoConfig.getConfigScreen(
+                                        VersionTooltipsConfig.class,
+                                        parent
+                                ).get()
+                )
         );
     }
 
-
-    private void onPlayerJoin(ClientPlayerNetworkEvent.LoggingIn event) {
+    private void onPlayerJoin(ClientPlayerNetworkEvent.LoggedInEvent event) {
 
         if (Minecraft.getInstance().getConnection() != null) {
             ItemVersionLoader.reportMissingEnchantments();
         }
     }
 
-
     private void onTooltip(ItemTooltipEvent event) {
         if (config == null) return;
         if (!config.modActive) return;
-        if (config.onlyShowWithAdvancedTooltips && !Minecraft.getInstance().options.advancedItemTooltips) return;
-        if (config.requireKeybind && SHOW_KEY != null) {
+
+        if (config.onlyShowWithAdvancedTooltips
+                && !Minecraft.getInstance().options.advancedItemTooltips) {
+            return;
+        }
+
+        if (config.requireKeybind) {
             int boundKeyCode = SHOW_KEY.get().getKey().getValue();
-            if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), boundKeyCode)) return;
+
+            if (!InputConstants.isKeyDown(
+                    Minecraft.getInstance().getWindow().getWindow(),
+                    boundKeyCode
+            )) {
+                return;
+            }
         }
 
         var id = ItemVersionLoader.getEffectiveId(event.getItemStack());
         if (id == null) return;
 
         var lines = event.getToolTip();
+
         String snapshot = ItemVersionLoader.BLOCK_VERSIONS_SNAPSHOT.get(id);
-        if (snapshot == null) snapshot = ItemVersionLoader.ITEM_VERSIONS_SNAPSHOT.get(id);
+        if (snapshot == null) {
+            snapshot = ItemVersionLoader.ITEM_VERSIONS_SNAPSHOT.get(id);
+        }
 
         String version = ItemVersionLoader.BLOCK_VERSIONS_VERSION.get(id);
-        if (version == null) version = ItemVersionLoader.ITEM_VERSIONS_VERSION.get(id);
+        if (version == null) {
+            version = ItemVersionLoader.ITEM_VERSIONS_VERSION.get(id);
+        }
 
         if (config.type == VersionTooltipsConfig.TooltipType.SnapshotOnly) {
             if (snapshot == null) return;
+
             if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
-                lines.add(Component.literal("+ ").withStyle(ChatFormatting.RED)
-                        .append(Component.literal(snapshot).withStyle(ChatFormatting.WHITE)));
+                lines.add(new TextComponent("+ ").withStyle(ChatFormatting.RED)
+                        .append(new TextComponent(snapshot).withStyle(ChatFormatting.WHITE)));
             } else {
-                lines.add(Component.literal("Added in " + snapshot).withStyle(ChatFormatting.DARK_GRAY));
+                lines.add(new TextComponent("Added in " + snapshot)
+                        .withStyle(ChatFormatting.DARK_GRAY));
             }
         }
 
         if (config.type == VersionTooltipsConfig.TooltipType.VersionOnly) {
             if (version == null) return;
+
             if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
-                lines.add(Component.literal("+ ").withStyle(ChatFormatting.BLUE)
-                        .append(Component.literal(version).withStyle(ChatFormatting.WHITE)));
+                lines.add(new TextComponent("+ ").withStyle(ChatFormatting.BLUE)
+                        .append(new TextComponent(version).withStyle(ChatFormatting.WHITE)));
             } else {
-                lines.add(Component.literal("Added in " + version).withStyle(ChatFormatting.DARK_GRAY));
+                lines.add(new TextComponent("Added in " + version)
+                        .withStyle(ChatFormatting.DARK_GRAY));
             }
         }
 
         if (config.type == VersionTooltipsConfig.TooltipType.VersionSnapshot) {
             if (version == null || snapshot == null) return;
+
             if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
-                lines.add(Component.literal("+ ").withStyle(ChatFormatting.GREEN)
-                        .append(Component.literal(version + " (" + snapshot + ")").withStyle(ChatFormatting.WHITE)));
+                lines.add(new TextComponent("+ ").withStyle(ChatFormatting.GREEN)
+                        .append(new TextComponent(version + " (" + snapshot + ")")
+                                .withStyle(ChatFormatting.WHITE)));
             } else {
-                lines.add(Component.literal("Added in " + version + " (" + snapshot + ")").withStyle(ChatFormatting.DARK_GRAY));
+                lines.add(new TextComponent("Added in " + version + " (" + snapshot + ")")
+                        .withStyle(ChatFormatting.DARK_GRAY));
             }
         }
 
         if (config.type == VersionTooltipsConfig.TooltipType.SnapshotVersion) {
             if (version == null || snapshot == null) return;
+
             if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
-                lines.add(Component.literal("+ ").withStyle(ChatFormatting.GREEN)
-                        .append(Component.literal(snapshot + " (" + version + ")").withStyle(ChatFormatting.WHITE)));
+                lines.add(new TextComponent("+ ").withStyle(ChatFormatting.GREEN)
+                        .append(new TextComponent(snapshot + " (" + version + ")")
+                                .withStyle(ChatFormatting.WHITE)));
             } else {
-                lines.add(Component.literal("Added in " + snapshot + " (" + version + ")").withStyle(ChatFormatting.DARK_GRAY));
+                lines.add(new TextComponent("Added in " + snapshot + " (" + version + ")")
+                        .withStyle(ChatFormatting.DARK_GRAY));
             }
         }
     }

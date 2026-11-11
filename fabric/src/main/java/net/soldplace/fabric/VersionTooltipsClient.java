@@ -10,7 +10,7 @@ import net.minecraft.client.KeyMapping;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.ChatFormatting;
 import net.soldplace.config.VersionTooltipsConfig;
 import net.soldplace.data.ItemVersionLoader;
@@ -72,11 +72,11 @@ public class VersionTooltipsClient implements ClientModInitializer {
 				}
 
 				if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
-					lines.add(Component.literal("+ ").withStyle(ChatFormatting.RED)
-							.append(Component.literal(snapshot).withStyle(ChatFormatting.WHITE)));
+					lines.add(new TextComponent("+ ").withStyle(ChatFormatting.RED)
+							.append(new TextComponent(snapshot).withStyle(ChatFormatting.WHITE)));
 				} else {
 					if (config.style == VersionTooltipsConfig.TooltipStyle.Vanilla) {
-						lines.add(Component.literal("Added in " + snapshot).withStyle(ChatFormatting.DARK_GRAY));
+						lines.add(new TextComponent("Added in " + snapshot).withStyle(ChatFormatting.DARK_GRAY));
 					}
 				}
 			}
@@ -89,11 +89,11 @@ public class VersionTooltipsClient implements ClientModInitializer {
 				}
 
 				if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
-					lines.add(Component.literal("+ ").withStyle(ChatFormatting.BLUE)
-							.append(Component.literal(version).withStyle(ChatFormatting.WHITE)));
+					lines.add(new TextComponent("+ ").withStyle(ChatFormatting.BLUE)
+							.append(new TextComponent(version).withStyle(ChatFormatting.WHITE)));
 				} else {
 					if (config.style == VersionTooltipsConfig.TooltipStyle.Vanilla) {
-						lines.add(Component.literal("Added in " + version).withStyle(ChatFormatting.DARK_GRAY));
+						lines.add(new TextComponent("Added in " + version).withStyle(ChatFormatting.DARK_GRAY));
 					}
 				}
 			}
@@ -111,11 +111,11 @@ public class VersionTooltipsClient implements ClientModInitializer {
 				}
 
 				if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
-					lines.add(Component.literal("+ ").withStyle(ChatFormatting.GREEN)
-							.append(Component.literal(version + " (" + snapshot + ")").withStyle(ChatFormatting.WHITE)));
+					lines.add(new TextComponent("+ ").withStyle(ChatFormatting.GREEN)
+							.append(new TextComponent(version + " (" + snapshot + ")").withStyle(ChatFormatting.WHITE)));
 				} else {
 					if (config.style == VersionTooltipsConfig.TooltipStyle.Vanilla) {
-						lines.add(Component.literal("Added in " + version + " (" + snapshot + ")").withStyle(ChatFormatting.DARK_GRAY));
+						lines.add(new TextComponent("Added in " + version + " (" + snapshot + ")").withStyle(ChatFormatting.DARK_GRAY));
 					}
 				}
 			}
@@ -133,11 +133,11 @@ public class VersionTooltipsClient implements ClientModInitializer {
 				}
 
 				if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
-					lines.add(Component.literal("+ ").withStyle(ChatFormatting.GREEN)
-							.append(Component.literal(snapshot + " (" + version + ")").withStyle(ChatFormatting.WHITE)));
+					lines.add(new TextComponent("+ ").withStyle(ChatFormatting.GREEN)
+							.append(new TextComponent(snapshot + " (" + version + ")").withStyle(ChatFormatting.WHITE)));
 				} else {
 					if (config.style == VersionTooltipsConfig.TooltipStyle.Vanilla) {
-						lines.add(Component.literal("Added in " + snapshot + " (" + version + ")").withStyle(ChatFormatting.DARK_GRAY));
+						lines.add(new TextComponent("Added in " + snapshot + " (" + version + ")").withStyle(ChatFormatting.DARK_GRAY));
 					}
 				}
 			}

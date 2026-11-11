@@ -16,7 +16,7 @@ logoFile="VersionTooltipsIcon128x128.png"
 [[dependencies.versiontooltips]]
 modId="minecraft"
 mandatory = true
-versionRange="[1.19,1.19.2]"
+versionRange="[1.18,1.18.2]"
 ordering="NONE"
 side="BOTH"
 
@@ -30,7 +30,7 @@ side="BOTH"
 [[dependencies.versiontooltips]]
 modId="cloth_config"
 mandatory = true
-versionRange="[8.3.134,)"
+versionRange="[6.5.102,)"
 ordering="BEFORE"
 side="BOTH"
 
