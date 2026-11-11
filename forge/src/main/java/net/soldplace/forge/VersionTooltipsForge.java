@@ -11,11 +11,11 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
 
-import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.ClientRegistry;
+import net.minecraftforge.client.ConfigGuiHandler;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.ConfigGuiHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -23,6 +23,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import net.soldplace.config.VersionTooltipsConfig;
 import net.soldplace.data.ItemVersionLoader;
@@ -58,7 +59,7 @@ public class VersionTooltipsForge {
             );
         }
 
-        var modBus = net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
+        var modBus = FMLJavaModLoadingContext
                 .get()
                 .getModEventBus();
 
@@ -67,9 +68,11 @@ public class VersionTooltipsForge {
 
         MinecraftForge.EVENT_BUS.addListener(this::onTooltip);
         MinecraftForge.EVENT_BUS.addListener(this::onPlayerJoin);
+        MinecraftForge.EVENT_BUS.addListener(this::registerClientCommands);
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
+
         AutoConfig.register(
                 VersionTooltipsConfig.class,
                 GsonConfigSerializer::new
@@ -77,30 +80,19 @@ public class VersionTooltipsForge {
 
         config = AutoConfig.getConfigHolder(
                 VersionTooltipsConfig.class
-        ).get();
+        ).getConfig();
 
         event.enqueueWork(() ->
                 ClientRegistry.registerKeyBinding(SHOW_KEY.get())
         );
     }
 
-
-
     private void registerReloadListeners(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener(new ItemVersionLoader());
     }
 
-    if (FMLEnvironment.dist.isClient()) {
-        ModLoadingContext.get().registerExtensionPoint(
-                ConfigGuiHandler.ConfigGuiFactory.class,
-                () -> new ConfigGuiHandler.ConfigGuiFactory(
-                        (minecraft, parent) ->
-                                AutoConfig.getConfigScreen(
-                                        VersionTooltipsConfig.class,
-                                        parent
-                                ).get()
-                )
-        );
+    private void registerClientCommands(RegisterClientCommandsEvent event) {
+        ModCommandsForge.register(event.getDispatcher());
     }
 
     private void onPlayerJoin(ClientPlayerNetworkEvent.LoggedInEvent event) {
@@ -111,6 +103,7 @@ public class VersionTooltipsForge {
     }
 
     private void onTooltip(ItemTooltipEvent event) {
+
         if (config == null) return;
         if (!config.modActive) return;
 
@@ -146,6 +139,7 @@ public class VersionTooltipsForge {
         }
 
         if (config.type == VersionTooltipsConfig.TooltipType.SnapshotOnly) {
+
             if (snapshot == null) return;
 
             if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
@@ -158,6 +152,7 @@ public class VersionTooltipsForge {
         }
 
         if (config.type == VersionTooltipsConfig.TooltipType.VersionOnly) {
+
             if (version == null) return;
 
             if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
@@ -170,6 +165,7 @@ public class VersionTooltipsForge {
         }
 
         if (config.type == VersionTooltipsConfig.TooltipType.VersionSnapshot) {
+
             if (version == null || snapshot == null) return;
 
             if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {
@@ -183,6 +179,7 @@ public class VersionTooltipsForge {
         }
 
         if (config.type == VersionTooltipsConfig.TooltipType.SnapshotVersion) {
+
             if (version == null || snapshot == null) return;
 
             if (config.style == VersionTooltipsConfig.TooltipStyle.Modded) {

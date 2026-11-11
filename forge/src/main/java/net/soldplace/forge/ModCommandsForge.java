@@ -7,7 +7,7 @@ import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.soldplace.config.VersionTooltipsConfig;
 
 import java.util.Arrays;
@@ -20,7 +20,7 @@ public class ModCommandsForge {
                 Commands.literal("versiontooltips")
                         .executes(ctx -> {
                             var config = AutoConfig.getConfigHolder(VersionTooltipsConfig.class).getConfig();
-                            ctx.getSource().sendSuccess(Component.literal(
+                            ctx.getSource().sendSuccess(new TextComponent(
                                     "Current Version Tooltips config:\n" +
                                             "  §6active:§r           " + config.modActive + "\n" +
                                             "  §6type:§r             " + config.type.name() + "\n" +
@@ -36,7 +36,7 @@ public class ModCommandsForge {
                                         .executes(ctx -> {
                                             boolean value = BoolArgumentType.getBool(ctx, "value");
                                             setConfig(c -> c.modActive = value);
-                                            ctx.getSource().sendSuccess(Component.literal(
+                                            ctx.getSource().sendSuccess(new TextComponent(
                                                     "§6[VersionTooltips]§r active set to " + value), false);
                                             return 1;
                                         })
@@ -54,10 +54,10 @@ public class ModCommandsForge {
                                             try {
                                                 var parsed = VersionTooltipsConfig.TooltipType.valueOf(value);
                                                 setConfig(c -> c.type = parsed);
-                                                ctx.getSource().sendSuccess(Component.literal(
+                                                ctx.getSource().sendSuccess(new TextComponent(
                                                         "§6[VersionTooltips]§r type set to " + parsed.name()), false);
                                             } catch (IllegalArgumentException e) {
-                                                ctx.getSource().sendSuccess(Component.literal(
+                                                ctx.getSource().sendSuccess(new TextComponent(
                                                         "§6[VersionTooltips]§r Unknown type '" + value + "'. Options: " +
                                                                 Arrays.stream(VersionTooltipsConfig.TooltipType.values())
                                                                         .map(Enum::name)
@@ -79,10 +79,10 @@ public class ModCommandsForge {
                                             try {
                                                 var parsed = VersionTooltipsConfig.TooltipStyle.valueOf(value);
                                                 setConfig(c -> c.style = parsed);
-                                                ctx.getSource().sendSuccess(Component.literal(
+                                                ctx.getSource().sendSuccess(new TextComponent(
                                                         "§6[VersionTooltips]§r style set to " + parsed.name()), false);
                                             } catch (IllegalArgumentException e) {
-                                                ctx.getSource().sendSuccess(Component.literal(
+                                                ctx.getSource().sendSuccess(new TextComponent(
                                                         "§6[VersionTooltips]§r Unknown style '" + value + "'. Options: Vanilla, Modded"), false);
                                             }
                                             return 1;
@@ -95,7 +95,7 @@ public class ModCommandsForge {
                                         .executes(ctx -> {
                                             boolean value = BoolArgumentType.getBool(ctx, "value");
                                             setConfig(c -> c.requireKeybind = value);
-                                            ctx.getSource().sendSuccess(Component.literal(
+                                            ctx.getSource().sendSuccess(new TextComponent(
                                                     "§6[VersionTooltips]§r keybind set to " + value) ,false);
                                             return 1;
                                         })
@@ -107,7 +107,7 @@ public class ModCommandsForge {
                                         .executes(ctx -> {
                                             boolean value = BoolArgumentType.getBool(ctx, "value");
                                             setConfig(c -> c.onlyShowWithAdvancedTooltips = value);
-                                            ctx.getSource().sendSuccess(Component.literal(
+                                            ctx.getSource().sendSuccess(new TextComponent(
                                                     "§6[VersionTooltips]§r advancedonly set to " + value), false);
                                             return 1;
                                         })

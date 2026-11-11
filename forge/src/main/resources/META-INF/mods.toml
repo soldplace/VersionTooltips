@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[41,)"
+loaderVersion="[39,)"
 license="CC-NC-4.0"
 issueTrackerURL="https://github.com/nicolesrt/VersionTooltips"
 
@@ -23,7 +23,7 @@ side="BOTH"
 [[dependencies.versiontooltips]]
 modId="forge"
 mandatory = true
-versionRange="[41,)"
+versionRange="[39,)"
 ordering="NONE"
 side="BOTH"
 
