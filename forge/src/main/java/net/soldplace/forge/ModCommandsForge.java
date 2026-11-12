@@ -1,14 +1,21 @@
 
 package net.soldplace.forge;
 
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import me.shedaniel.autoconfig.AutoConfig;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.TextComponent;
 
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.common.MinecraftForge;
 
+import net.minecraftforge.event.TickEvent;
 import net.soldplace.config.VersionTooltipsConfig;
 
 import java.util.Arrays;
@@ -16,9 +23,95 @@ import java.util.Locale;
 import java.util.function.Consumer;
 
 public class ModCommandsForge {
-
+    private static CommandDispatcher<SharedSuggestionProvider> registeredDispatcher;
     public static void register() {
         MinecraftForge.EVENT_BUS.addListener(ModCommandsForge::onClientChat);
+        MinecraftForge.EVENT_BUS.addListener(ModCommandsForge::onClientChat);
+        MinecraftForge.EVENT_BUS.addListener(ModCommandsForge::onClientTick);
+    }
+
+    private static void onClientTick(TickEvent.ClientTickEvent event) {
+
+        if (event.phase != TickEvent.Phase.END) return;
+
+        var connection = Minecraft.getInstance().getConnection();
+
+        if (connection == null) {
+            registeredDispatcher = null;
+            return;
+        }
+
+        var dispatcher = connection.getCommands();
+
+        // Don't register the suggestions twice
+        if (dispatcher == registeredDispatcher) return;
+
+        dispatcher.register(
+                LiteralArgumentBuilder.<SharedSuggestionProvider>literal("versiontooltips")
+
+                        .executes(ctx -> 1)
+
+                        .then(LiteralArgumentBuilder.<SharedSuggestionProvider>literal("active")
+                                .then(RequiredArgumentBuilder.<SharedSuggestionProvider, Boolean>argument(
+                                                "value", BoolArgumentType.bool())
+                                        .suggests((ctx, builder) ->
+                                                SharedSuggestionProvider.suggest(
+                                                        new String[]{"true", "false"}, builder
+                                                ))
+                                        .executes(ctx -> 1)
+                                )
+                        )
+
+                        .then(LiteralArgumentBuilder.<SharedSuggestionProvider>literal("type")
+                                .then(RequiredArgumentBuilder.<SharedSuggestionProvider, String>argument(
+                                                "value", StringArgumentType.word())
+                                        .suggests((ctx, builder) ->
+                                                SharedSuggestionProvider.suggest(
+                                                        Arrays.stream(VersionTooltipsConfig.TooltipType.values())
+                                                                .map(Enum::name),
+                                                        builder
+                                                ))
+                                        .executes(ctx -> 1)
+                                )
+                        )
+
+                        .then(LiteralArgumentBuilder.<SharedSuggestionProvider>literal("style")
+                                .then(RequiredArgumentBuilder.<SharedSuggestionProvider, String>argument(
+                                                "value", StringArgumentType.word())
+                                        .suggests((ctx, builder) ->
+                                                SharedSuggestionProvider.suggest(
+                                                        Arrays.stream(VersionTooltipsConfig.TooltipStyle.values())
+                                                                .map(Enum::name),
+                                                        builder
+                                                ))
+                                        .executes(ctx -> 1)
+                                )
+                        )
+
+                        .then(LiteralArgumentBuilder.<SharedSuggestionProvider>literal("requirekeybind")
+                                .then(RequiredArgumentBuilder.<SharedSuggestionProvider, Boolean>argument(
+                                                "value", BoolArgumentType.bool())
+                                        .suggests((ctx, builder) ->
+                                                SharedSuggestionProvider.suggest(
+                                                        new String[]{"true", "false"}, builder
+                                                ))
+                                        .executes(ctx -> 1)
+                                )
+                        )
+
+                        .then(LiteralArgumentBuilder.<SharedSuggestionProvider>literal("advancedtooltips")
+                                .then(RequiredArgumentBuilder.<SharedSuggestionProvider, Boolean>argument(
+                                                "value", BoolArgumentType.bool())
+                                        .suggests((ctx, builder) ->
+                                                SharedSuggestionProvider.suggest(
+                                                        new String[]{"true", "false"}, builder
+                                                ))
+                                        .executes(ctx -> 1)
+                                )
+                        )
+        );
+
+        registeredDispatcher = dispatcher;
     }
 
     private static void onClientChat(ClientChatEvent event) {
@@ -103,16 +196,16 @@ public class ModCommandsForge {
     private static void setType(String value) {
 
         try {
-            var parsed = VersionTooltipsConfig.TooltipType.valueOf(
-                    value.toUpperCase(Locale.ROOT)
-            );
+            var parsed = Arrays.stream(VersionTooltipsConfig.TooltipType.values())
+                    .filter(type -> type.name().equalsIgnoreCase(value))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException());
 
             setConfig(config -> config.type = parsed);
 
             send("§a[VersionTooltips]§r type set to " + parsed.name());
 
         } catch (IllegalArgumentException e) {
-
             send("§cUnknown type '" + value + "'. Options: "
                     + Arrays.stream(VersionTooltipsConfig.TooltipType.values())
                     .map(Enum::name)
@@ -124,21 +217,17 @@ public class ModCommandsForge {
     private static void setStyle(String value) {
 
         try {
-            var parsed = VersionTooltipsConfig.TooltipStyle.valueOf(
-                    value.toUpperCase(Locale.ROOT)
-            );
+            var parsed = Arrays.stream(VersionTooltipsConfig.TooltipStyle.values())
+                    .filter(style -> style.name().equalsIgnoreCase(value))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException());
 
             setConfig(config -> config.style = parsed);
 
             send("§a[VersionTooltips]§r style set to " + parsed.name());
 
         } catch (IllegalArgumentException e) {
-
-            send("§cUnknown style '" + value + "'. Options: "
-                    + Arrays.stream(VersionTooltipsConfig.TooltipStyle.values())
-                    .map(Enum::name)
-                    .reduce((a, b) -> a + ", " + b)
-                    .orElse(""));
+            send("§cUnknown style '" + value + "'. Options: Vanilla, Modded");
         }
     }
 
