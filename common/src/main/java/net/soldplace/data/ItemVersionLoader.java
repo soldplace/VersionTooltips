@@ -38,10 +38,10 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
 
     public static ResourceLocation getEffectiveId(ItemStack stack) {
 
-        if (stack.is(Items.POTION)
-                || stack.is(Items.SPLASH_POTION)
-                || stack.is(Items.LINGERING_POTION)
-                || stack.is(Items.TIPPED_ARROW)) {
+        if (stack.getItem() == Items.POTION
+                || stack.getItem() == Items.SPLASH_POTION
+                || stack.getItem() == Items.LINGERING_POTION
+                || stack.getItem() == Items.TIPPED_ARROW) {
 
             Potion potion = PotionUtils.getPotion(stack);
 
@@ -60,7 +60,7 @@ public class ItemVersionLoader implements ResourceManagerReloadListener {
             );
         }
 
-        if (stack.is(Items.ENCHANTED_BOOK)) {
+        if (stack.getItem() == Items.ENCHANTED_BOOK) {
 
             Map<Enchantment, Integer> storedEnchants =
                     EnchantmentHelper.getEnchantments(stack);
