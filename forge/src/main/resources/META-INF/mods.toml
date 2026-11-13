@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[37,)"
+loaderVersion="[33,)"
 license="CC-NC-4.0"
 issueTrackerURL="https://github.com/nicolesrt/VersionTooltips"
 
@@ -23,14 +23,14 @@ side="BOTH"
 [[dependencies.versiontooltips]]
 modId="forge"
 mandatory = true
-versionRange="[37,)"
+versionRange="[33,)"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.versiontooltips]]
-modId="cloth_config"
+modId="cloth-config"
 mandatory = true
-versionRange="[4.17.101,)"
+versionRange="[4.15.82,)"
 ordering="BEFORE"
 side="BOTH"
 

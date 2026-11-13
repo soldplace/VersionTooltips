@@ -10,15 +10,15 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
 
-import net.minecraftforge.fmlclient.ConfigGuiHandler;
-import net.minecraftforge.fmlclient.registry.ClientRegistry;
-
-import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -29,6 +29,8 @@ import net.soldplace.config.VersionTooltipsConfig;
 import net.soldplace.data.ItemVersionLoader;
 
 import org.lwjgl.glfw.GLFW;
+
+import java.util.List;
 
 @Mod("versiontooltips")
 public class VersionTooltipsForge {
@@ -47,25 +49,23 @@ public class VersionTooltipsForge {
     public VersionTooltipsForge() {
 
         if (FMLEnvironment.dist.isClient()) {
+
             ModCommandsForge.register();
+
             ModLoadingContext.get().registerExtensionPoint(
-                    ConfigGuiHandler.ConfigGuiFactory.class,
-                    () -> new ConfigGuiHandler.ConfigGuiFactory(
-                            (minecraft, parent) ->
-                                    AutoConfig.getConfigScreen(
-                                            VersionTooltipsConfig.class,
-                                            parent
-                                    ).get()
-                    )
+                    ExtensionPoint.CONFIGGUIFACTORY,
+                    () -> (minecraft, parent) ->
+                            AutoConfig.getConfigScreen(
+                                    VersionTooltipsConfig.class,
+                                    parent
+                            ).get()
             );
         }
 
-        var modBus = FMLJavaModLoadingContext
-                .get()
-                .getModEventBus();
+        net.minecraftforge.eventbus.api.IEventBus modBus =
+                FMLJavaModLoadingContext.get().getModEventBus();
 
         modBus.addListener(this::clientSetup);
-        modBus.addListener(this::registerReloadListeners);
 
         MinecraftForge.EVENT_BUS.addListener(this::onTooltip);
         MinecraftForge.EVENT_BUS.addListener(this::onPlayerJoin);
@@ -82,13 +82,16 @@ public class VersionTooltipsForge {
                 VersionTooltipsConfig.class
         ).getConfig();
 
-        event.enqueueWork(() ->
-                ClientRegistry.registerKeyBinding(SHOW_KEY.get())
-        );
-    }
+        event.enqueueWork(() -> {
 
-    private void registerReloadListeners(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(new ItemVersionLoader());
+            ClientRegistry.registerKeyBinding(SHOW_KEY.get());
+
+            ReloadableResourceManager resourceManager =
+                    (ReloadableResourceManager) Minecraft.getInstance().getResourceManager();
+            ItemVersionLoader loader = new ItemVersionLoader();
+            resourceManager.registerReloadListener(loader);
+            loader.reload(resourceManager);
+        });
     }
 
     private void onPlayerJoin(ClientPlayerNetworkEvent.LoggedInEvent event) {
@@ -108,28 +111,25 @@ public class VersionTooltipsForge {
             return;
         }
 
-        if (config.requireKeybind) {
-            int boundKeyCode = SHOW_KEY.get().getKey().getValue();
-
-            if (!InputConstants.isKeyDown(
-                    Minecraft.getInstance().getWindow().getWindow(),
-                    boundKeyCode
-            )) {
-                return;
-            }
+        if (config.requireKeybind && !SHOW_KEY.get().isDown()) {
+            return;
         }
 
-        var id = ItemVersionLoader.getEffectiveId(event.getItemStack());
+        net.minecraft.resources.ResourceLocation id =
+                ItemVersionLoader.getEffectiveId(event.getItemStack());
+
         if (id == null) return;
 
-        var lines = event.getToolTip();
+        List<Component> lines = event.getToolTip();
 
         String snapshot = ItemVersionLoader.BLOCK_VERSIONS_SNAPSHOT.get(id);
+
         if (snapshot == null) {
             snapshot = ItemVersionLoader.ITEM_VERSIONS_SNAPSHOT.get(id);
         }
 
         String version = ItemVersionLoader.BLOCK_VERSIONS_VERSION.get(id);
+
         if (version == null) {
             version = ItemVersionLoader.ITEM_VERSIONS_VERSION.get(id);
         }
